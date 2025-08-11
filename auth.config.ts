@@ -8,19 +8,14 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/');
+      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       const isOnLoginPage = nextUrl.pathname.startsWith('/login');
-      const isOnVisitorIntake = nextUrl.pathname.startsWith('/visitor-intake');
       
-      if (isOnVisitorIntake) {
-        return true; // Allow unauthenticated access to visitor intake
-      }
-
-      if (isOnDashboard && !isOnLoginPage) {
+      if (isOnDashboard) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
       } else if (isLoggedIn && isOnLoginPage) {
-        return Response.redirect(new URL('/', nextUrl));
+        return Response.redirect(new URL('/dashboard', nextUrl));
       }
       return true;
     },

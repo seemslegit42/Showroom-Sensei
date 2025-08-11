@@ -49,7 +49,7 @@ export default function VisitorIntakePage() {
             });
             // In a real app, you'd save this data.
             // For now, we'll just redirect to the main page.
-            setTimeout(() => router.push('/'), 2000);
+            setTimeout(() => router.push('/dashboard'), 2000);
         } catch(error) {
             console.error("Error triaging visitor:", error);
             toast({
@@ -58,7 +58,7 @@ export default function VisitorIntakePage() {
                 variant: 'destructive',
             });
             // Still proceed even if AI fails
-             setTimeout(() => router.push('/'), 2000);
+             setTimeout(() => router.push('/dashboard'), 2000);
         }
     };
 
@@ -69,7 +69,7 @@ export default function VisitorIntakePage() {
                     <CardHeader className="text-center">
                         <div className="flex items-center justify-center gap-2 mb-2">
                             <Bot className="w-8 h-8 text-primary" />
-                            <h1 className="text-2xl font-bold font-headline">Showhome Sensei</h1>
+                            <h1 className="text-2xl font-bold font-headline">Showhome Sidekick</h1>
                         </div>
                         <CardTitle>Welcome!</CardTitle>
                         <CardDescription>Just a few quick questions to personalize your tour.</CardDescription>
@@ -116,7 +116,7 @@ export default function VisitorIntakePage() {
                         <Button type="submit" className="w-full" disabled={isLoading}>
                             {isLoading ? 'Triaging with AI...' : <><Send className="w-4 h-4 mr-2" /> Start My Tour </> }
                         </Button>
-                        <Link href="/" className="w-full">
+                        <Link href="/dashboard" className="w-full">
                             <Button variant="outline" className="w-full" disabled={isLoading}>
                                <ArrowLeft className="w-4 h-4 mr-2" />
                                 Back to Dashboard

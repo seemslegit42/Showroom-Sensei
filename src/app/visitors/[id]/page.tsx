@@ -23,7 +23,7 @@ export default function VisitorTourPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <p className="mb-4 text-lg">Visitor not found.</p>
-        <Link href="/">
+        <Link href="/dashboard">
           <Button variant="outline">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
@@ -36,7 +36,7 @@ export default function VisitorTourPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-20 flex items-center h-16 px-4 border-b shrink-0 bg-background/90 backdrop-blur-sm sm:px-6">
-        <Link href="/" className="mr-4">
+        <Link href="/dashboard" className="mr-4">
           <Button variant="outline" size="icon">
             <ArrowLeft className="w-4 h-4" />
             <span className="sr-only">Back</span>
