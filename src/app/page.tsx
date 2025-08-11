@@ -5,7 +5,9 @@ import { WelcomeTab } from '@/components/welcome-tab';
 import { InventoryTab } from '@/components/inventory-tab';
 import { AnalyticsTab } from '@/components/analytics-tab';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bot, Home, AreaChart, Users } from "lucide-react";
+import { Bot, Home, AreaChart, Users, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { signOut } from "next-auth/react"
 
 export default function DashboardPage() {
   return (
@@ -15,10 +17,16 @@ export default function DashboardPage() {
           <Bot className="w-8 h-8 text-primary"/>
           <h1 className="text-xl font-bold font-headline">Showhome Sensei</h1>
         </div>
-        <Avatar>
-          <AvatarImage src="https://placehold.co/100x100.png" data-ai-hint="woman portrait" alt="Sales Host" />
-          <AvatarFallback>SP</AvatarFallback>
-        </Avatar>
+        <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => signOut({ callbackUrl: '/login' })}>
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+            </Button>
+            <Avatar>
+              <AvatarImage src="https://placehold.co/100x100.png" data-ai-hint="woman portrait" alt="Sales Host" />
+              <AvatarFallback>SP</AvatarFallback>
+            </Avatar>
+        </div>
       </header>
       <main className="flex-1 p-4 sm:p-6">
         <Tabs defaultValue="welcome" className="w-full">
