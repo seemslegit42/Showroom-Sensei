@@ -9,15 +9,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Bot, Send } from 'lucide-react';
+import { ArrowLeft, Bot, Send, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { triageVisitor, type TriageVisitorInput } from '@/ai/flows/triage-visitor';
 
 export default function VisitorIntakePage() {
     const router = useRouter();
     const { toast } = useToast();
     const [name, setName] = useState('');
+    const [budget, setBudget] = useState('');
+    const [timeline, setTimeline] = useState('');
+    const [mustHave, setMustHave] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!name) {
             toast({
@@ -28,13 +33,33 @@ export default function VisitorIntakePage() {
             return;
         }
 
-        toast({
-            title: `Welcome, ${name}!`,
-            description: "You've been checked in. A sales host will be with you shortly.",
-        });
-        // In a real app, you'd save this data.
-        // For now, we'll just redirect to the main page.
-        router.push('/');
+        setIsLoading(true);
+
+        try {
+            const triageInput: TriageVisitorInput = {
+                budget: budget || undefined,
+                timeline: timeline || undefined,
+                mustHave: mustHave || undefined,
+            }
+            const result = await triageVisitor(triageInput);
+
+            toast({
+                title: `Welcome, ${name}!`,
+                description: `Visitor triaged as: ${result.status}. Redirecting to dashboard...`,
+            });
+            // In a real app, you'd save this data.
+            // For now, we'll just redirect to the main page.
+            setTimeout(() => router.push('/'), 2000);
+        } catch(error) {
+            console.error("Error triaging visitor:", error);
+            toast({
+                title: 'AI Triage Failed',
+                description: "Could not triage visitor. Proceeding with manual intake.",
+                variant: 'destructive',
+            });
+            // Still proceed even if AI fails
+             setTimeout(() => router.push('/'), 2000);
+        }
     };
 
     return (
@@ -52,11 +77,11 @@ export default function VisitorIntakePage() {
                     <CardContent className="space-y-4">
                         <div>
                             <Label htmlFor="name">What's your name?</Label>
-                            <Input id="name" placeholder="e.g., The Johnson Family" value={name} onChange={(e) => setName(e.target.value)} />
+                            <Input id="name" placeholder="e.g., The Johnson Family" value={name} onChange={(e) => setName(e.target.value)} required />
                         </div>
                         <div>
                             <Label htmlFor="budget">What's your budget?</Label>
-                            <Select>
+                            <Select onValueChange={setBudget} value={budget}>
                                 <SelectTrigger id="budget">
                                     <SelectValue placeholder="Select a range" />
                                 </SelectTrigger>
@@ -70,7 +95,7 @@ export default function VisitorIntakePage() {
                         </div>
                         <div>
                             <Label htmlFor="timeline">What's your move-in timeline?</Label>
-                             <Select>
+                             <Select onValueChange={setTimeline} value={timeline}>
                                 <SelectTrigger id="timeline">
                                     <SelectValue placeholder="Select a timeline" />
                                 </SelectTrigger>
@@ -84,16 +109,15 @@ export default function VisitorIntakePage() {
                         </div>
                         <div>
                             <Label htmlFor="must-have">What's one must-have feature?</Label>
-                            <Textarea id="must-have" placeholder="e.g., A big backyard for the dog, a home office, a walk-in pantry..." />
+                            <Textarea id="must-have" placeholder="e.g., A big backyard for the dog, a home office, a walk-in pantry..." value={mustHave} onChange={(e) => setMustHave(e.target.value)}/>
                         </div>
                     </CardContent>
                     <CardFooter className="flex flex-col gap-4">
-                        <Button type="submit" className="w-full">
-                            <Send className="w-4 h-4 mr-2" />
-                            Start My Tour
+                        <Button type="submit" className="w-full" disabled={isLoading}>
+                            {isLoading ? 'Triaging with AI...' : <><Send className="w-4 h-4 mr-2" /> Start My Tour </> }
                         </Button>
                         <Link href="/" className="w-full">
-                            <Button variant="outline" className="w-full">
+                            <Button variant="outline" className="w-full" disabled={isLoading}>
                                <ArrowLeft className="w-4 h-4 mr-2" />
                                 Back to Dashboard
                             </Button>
