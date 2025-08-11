@@ -11,11 +11,13 @@ import { OptionConfigurator } from '@/components/tour/option-configurator';
 import { NeighborhoodInsights } from '@/components/tour/neighborhood-insights';
 import { AutomatedFollowup } from '@/components/tour/automated-followup';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState } from 'react';
 
 export default function VisitorTourPage() {
   const params = useParams();
   const visitorId = params.id as string;
   const visitor = visitors.find(v => v.id === visitorId);
+  const [currentSelections, setCurrentSelections] = useState('Standard Finishes');
 
   if (!visitor) {
     return (
@@ -51,7 +53,7 @@ export default function VisitorTourPage() {
                 <TabsTrigger value="insights"><Building className="w-4 h-4 mr-2" />Neighborhood</TabsTrigger>
               </TabsList>
               <TabsContent value="configurator" className="mt-4">
-                <OptionConfigurator />
+                <OptionConfigurator onSelectionChange={setCurrentSelections} />
               </TabsContent>
               <TabsContent value="insights" className="mt-4">
                 <NeighborhoodInsights />
@@ -61,7 +63,7 @@ export default function VisitorTourPage() {
           </div>
           <div className="space-y-6 lg:col-span-1">
             <VisitorDetails visitor={visitor} />
-            <AiUpsell />
+            <AiUpsell currentSelections={currentSelections} />
           </div>
         </div>
       </main>

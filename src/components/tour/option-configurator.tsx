@@ -4,10 +4,19 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export function OptionConfigurator() {
+type OptionConfiguratorProps = {
+  onSelectionChange: (selection: string) => void;
+};
+
+export function OptionConfigurator({ onSelectionChange }: OptionConfiguratorProps) {
   const [showUpgraded, setShowUpgraded] = useState(false);
+
+  useEffect(() => {
+    onSelectionChange(showUpgraded ? 'Upgraded Finishes' : 'Standard Finishes');
+  }, [showUpgraded, onSelectionChange]);
+
 
   return (
     <Card>

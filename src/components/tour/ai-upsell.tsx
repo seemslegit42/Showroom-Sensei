@@ -10,7 +10,7 @@ import { Bot, Wand2, Lightbulb } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from "@/hooks/use-toast"
 
-export function AiUpsell() {
+export function AiUpsell({ currentSelections }: { currentSelections?: string }) {
   const [behavior, setBehavior] = useState('');
   const [preferences, setPreferences] = useState('');
   const [suggestions, setSuggestions] = useState<UpsellSuggestionsOutput | null>(null);
@@ -33,6 +33,7 @@ export function AiUpsell() {
       const result = await getUpsellSuggestions({
         visitorBehavior: behavior,
         statedPreferences: preferences,
+        currentSelections: currentSelections,
       });
       setSuggestions(result);
     } catch (error) {
