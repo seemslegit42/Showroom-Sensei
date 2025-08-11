@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { MapPin, School, Park, ShoppingCart, Train } from 'lucide-react';
+import Image from 'next/image';
 
 const insights = [
     { icon: <School className="w-6 h-6 text-primary" />, title: 'Top-Rated Schools', description: 'Crestwood Elementary (9/10) and Northgate High (8/10) nearby.' },
