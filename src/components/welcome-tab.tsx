@@ -25,10 +25,12 @@ export function WelcomeTab() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Active Visitors</CardTitle>
-        <Button>
-          <PlusCircle className="w-4 h-4 mr-2" />
-          New Visitor Intake
-        </Button>
+        <Link href="/visitor-intake">
+          <Button>
+            <PlusCircle className="w-4 h-4 mr-2" />
+            New Visitor Intake
+          </Button>
+        </Link>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
