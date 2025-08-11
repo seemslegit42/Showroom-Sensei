@@ -11,7 +11,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const TriageVisitorInputSchema = z.object({
+const TriageVisitorInputSchema = z.object({
   budget: z.string().optional().describe("The visitor's stated budget range."),
   timeline: z.string().optional().describe("The visitor's move-in timeline."),
   mustHave: z.string().optional().describe("The visitor's 'must-have' feature in a new home."),
