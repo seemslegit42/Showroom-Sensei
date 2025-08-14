@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -48,7 +49,7 @@ export default function VisitorTourPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:grid-flow-col-dense">
           <div className="space-y-6 lg:col-span-1 lg:col-start-3">
             <VisitorDetails visitor={visitor} />
-            <AiUpsell currentSelections={currentSelections} />
+            <AiUpsell visitor={visitor} currentSelections={currentSelections} />
           </div>
           <div className="space-y-6 lg:col-span-2 lg:col-start-1">
             <Tabs defaultValue="configurator" className="w-full">

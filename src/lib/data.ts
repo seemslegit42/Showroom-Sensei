@@ -1,3 +1,4 @@
+
 import type { ChartConfig } from "@/components/ui/chart"
 
 export type Visitor = {
@@ -6,13 +7,14 @@ export type Visitor = {
   status: 'Hot Now' | 'Researching' | 'Just Looking';
   checkInTime: string;
   agent: string;
+  mustHave?: string;
 };
 
 export const visitors: Visitor[] = [
-  { id: '1', name: 'The Johnson Family', status: 'Hot Now', checkInTime: '10:32 AM', agent: 'Sarah P.' },
-  { id: '2', name: 'David Chen', status: 'Researching', checkInTime: '11:15 AM', agent: 'Sarah P.' },
+  { id: '1', name: 'The Johnson Family', status: 'Hot Now', checkInTime: '10:32 AM', agent: 'Sarah P.', mustHave: 'A big backyard for the dog' },
+  { id: '2', name: 'David Chen', status: 'Researching', checkInTime: '11:15 AM', agent: 'Sarah P.', mustHave: 'A home office' },
   { id: '3', name: 'Maria Garcia', status: 'Just Looking', checkInTime: '11:45 AM', agent: 'John D.' },
-  { id: '4', name: 'The Nguyens', status: 'Researching', checkInTime: '12:05 PM', agent: 'Sarah P.' },
+  { id: '4', name: 'The Nguyens', status: 'Researching', checkInTime: '12:05 PM', agent: 'Sarah P.', mustHave: 'A walk-in pantry' },
 ];
 
 export type Home = {

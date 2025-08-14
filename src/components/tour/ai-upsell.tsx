@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -9,10 +10,11 @@ import { Button } from '@/components/ui/button';
 import { Bot, Wand2, Lightbulb } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from "@/hooks/use-toast"
+import type { Visitor } from '@/lib/data';
 
-export function AiUpsell({ currentSelections }: { currentSelections?: string }) {
+export function AiUpsell({ visitor, currentSelections }: { visitor: Visitor, currentSelections?: string }) {
   const [behavior, setBehavior] = useState('');
-  const [preferences, setPreferences] = useState('');
+  const [preferences, setPreferences] = useState(visitor.mustHave || '');
   const [suggestions, setSuggestions] = useState<UpsellSuggestionsOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
