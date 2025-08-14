@@ -3,10 +3,12 @@
 
 import { signIn } from '@/../auth';
 import { db } from './db';
-import { inventoryModels, users, visitors, visits, type Visitor } from './db/schema';
+import { inventoryModels, users, visitors, visits } from './db/schema';
 import type { VisitStage, VisitWithVisitor } from './types';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import type { VisitorIntakeForm } from './validators';
+import type { Visitor } from './db/schema';
 
 export async function signInWithEmail(email: string) {
   try {
@@ -18,20 +20,13 @@ export async function signInWithEmail(email: string) {
   }
 }
 
-interface CreateVisitorData {
-    name: string;
-    budget: string;
-    timeline: string;
-    mustHave: string;
-    status: VisitStage;
-}
 
 /**
  * Creates a new visitor and an associated visit record in the database.
- * @param visitorData - The data for the new visitor and visit.
+ * @param visitorData - The data for the new visitor and visit, validated against the Zod schema.
  * @returns The newly created visit record.
  */
-export async function createVisitorAndVisit(visitorData: CreateVisitorData) {
+export async function createVisitorAndVisit(visitorData: VisitorIntakeForm) {
     // This is a simplification. In a real app, you'd get the tenant and host user IDs
     // from the session or context.
     const tenantId = 1;
@@ -54,8 +49,8 @@ export async function createVisitorAndVisit(visitorData: CreateVisitorData) {
         stage: visitorData.status,
         timeline: visitorData.timeline,
         mustHave: visitorData.mustHave,
-        budgetMin: parseInt(visitorData.budget.split('-')[0].replace(/\D/g, '')) * 1000 || 0,
-        budgetMax: parseInt(visitorData.budget.split('-')[1]?.replace(/\D/g, '')) * 1000 || null,
+        budgetMin: visitorData.budget ? parseInt(visitorData.budget.split('-')[0].replace(/\D/g, '')) * 1000 : 0,
+        budgetMax: visitorData.budget ? parseInt(visitorData.budget.split('-')[1]?.replace(/\D/g, '')) * 1000 || null : null,
     };
     
     const [insertedVisit] = await db.insert(visits).values(newVisit).returning();
