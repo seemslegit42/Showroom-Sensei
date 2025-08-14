@@ -1,4 +1,5 @@
-import type { Visitor } from '@/lib/data';
+
+import type { Visitor } from '@/lib/db/schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Flame, Search, Eye, Clock, User } from 'lucide-react';
@@ -15,7 +16,18 @@ const statusColors: { [key: string]: 'destructive' | 'secondary' | 'outline' } =
   'Just Looking': 'outline',
 };
 
-export function VisitorDetails({ visitor }: { visitor: Visitor }) {
+// This type is a placeholder. In a real app, you would define this
+// based on your actual data structure from the database.
+type VisitorDisplayData = {
+    id: string;
+    name: string;
+    status: 'Hot Now' | 'Researching' | 'Just Looking';
+    checkInTime: string;
+    agent: string;
+    mustHave?: string;
+}
+
+export function VisitorDetails({ visitor }: { visitor: VisitorDisplayData }) {
   return (
     <Card>
       <CardHeader>

@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import type { Visitor } from '@/lib/data';
 import { generateVisitRecap, type VisitRecapOutput } from '@/ai/flows/personalized-follow-up';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -14,7 +13,18 @@ import { Input } from '@/components/ui/input';
 import { useToast } from "@/hooks/use-toast";
 import Image from 'next/image';
 
-export function AutomatedFollowup({ visitor }: { visitor: Visitor }) {
+// This type is a placeholder. In a real app, you would define this
+// based on your actual data structure from the database.
+type VisitorDisplayData = {
+    id: string;
+    name: string;
+    status: 'Hot Now' | 'Researching' | 'Just Looking';
+    checkInTime: string;
+    agent: string;
+    mustHave?: string;
+}
+
+export function AutomatedFollowup({ visitor }: { visitor: VisitorDisplayData }) {
   const [notes, setNotes] = useState('');
   const [preferences, setPreferences] = useState('');
   const [photos, setPhotos] = useState<string[]>([]);

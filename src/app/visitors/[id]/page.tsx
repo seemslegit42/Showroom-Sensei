@@ -3,7 +3,6 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { visitors } from '@/lib/data';
 import { ArrowLeft, Building, Paintbrush } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { VisitorDetails } from '@/components/tour/visitor-details';
@@ -13,6 +12,10 @@ import { NeighborhoodInsights } from '@/components/tour/neighborhood-insights';
 import { AutomatedFollowup } from '@/components/tour/automated-followup';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState } from 'react';
+
+// In a real app, this data would be fetched from a database
+// based on the `params.id`.
+const visitors: any[] = [];
 
 export default function VisitorTourPage() {
   const params = useParams();
@@ -24,7 +27,8 @@ export default function VisitorTourPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <p className="mb-4 text-lg">Visitor not found.</p>
-        <Link href="/dashboard">
+        <p className="text-sm text-muted-foreground">In a real app, visitor data would be loaded from a database.</p>
+        <Link href="/dashboard" className="mt-4">
           <Button variant="outline">
             <ArrowLeft />
             Back to Dashboard

@@ -1,16 +1,50 @@
+
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { leadScoreData, leadScoreChartConfig, objectionData, objectionChartConfig, visitors } from "@/lib/data"
 import { useMemo } from "react"
+import type { ChartConfig } from "@/components/ui/chart"
+
+
+// In a real app, this data would be fetched from your database.
+const visitors: any[] = [];
+const leadScoreData: any[] = [];
+const objectionData: any[] = [];
+
+
+const leadScoreChartConfig = {
+  value: {
+    label: "Visitors",
+  },
+  hot: {
+    label: "Hot Now",
+    color: "hsl(var(--destructive))",
+  },
+  researching: {
+    label: "Researching",
+    color: "hsl(var(--primary))",
+  },
+  looking: {
+    label: "Just Looking",
+    color: "hsl(var(--accent))",
+  },
+} satisfies ChartConfig
+
+const objectionChartConfig = {
+    value: {
+      label: "Mentions",
+      color: "hsl(var(--accent))"
+    },
+} satisfies ChartConfig
+
 
 export function AnalyticsTab() {
   const summary = useMemo(() => {
     const totalVisitors = visitors.length;
     const hotLeads = visitors.filter(v => v.status === 'Hot Now').length;
-    const holds = 1; // This would come from a database in a real app
+    const holds = 0; // This would come from a database in a real app
     const pipeline = visitors
         .filter(v => v.status === 'Hot Now' || v.status === 'Researching')
         .reduce((acc, v) => acc + 650000, 0); // Using an average home price for demo
