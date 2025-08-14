@@ -5,7 +5,7 @@ import { signIn } from '@/../auth';
 import { db } from './db';
 import { inventoryModels, users, visitors, visits } from './db/schema';
 import type { VisitStage, VisitWithVisitor } from './types';
-import { eq } from 'drizzle-orm';
+import { eq, isNull } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import type { VisitorIntakeForm } from './validators';
 import type { Visitor } from './db/schema';
@@ -45,6 +45,24 @@ export async function createVisitorAndVisit(visitorData: VisitorIntakeForm) {
     
     const [visitor] = await db.insert(visitors).values(newVisitor).returning();
 
+    // Convert budget string to numbers
+    let budgetMin = 0;
+    let budgetMax = null;
+    if (visitorData.budget) {
+        if (visitorData.budget.startsWith('<')) {
+            budgetMin = 0;
+            budgetMax = parseInt(visitorData.budget.replace(/\D/g, ''), 10) * 1000;
+        } else if (visitorData.budget.startsWith('>')) {
+            budgetMin = parseInt(visitorData.budget.replace(/\D/g, ''), 10) * 1000;
+            budgetMax = null;
+        } else if (visitorData.budget.includes('-')) {
+            const parts = visitorData.budget.split('-').map(p => parseInt(p.replace(/\D/g, ''), 10) * 1000);
+            budgetMin = parts[0];
+            budgetMax = parts[1];
+        }
+    }
+
+
     const newVisit = {
         tenantId,
         visitorId: visitor.id,
@@ -52,8 +70,8 @@ export async function createVisitorAndVisit(visitorData: VisitorIntakeForm) {
         stage: visitorData.status,
         timeline: visitorData.timeline,
         mustHave: visitorData.mustHave,
-        budgetMin: visitorData.budget ? parseInt(visitorData.budget.split('-')[0].replace(/\D/g, '')) * 1000 : 0,
-        budgetMax: visitorData.budget ? parseInt(visitorData.budget.split('-')[1]?.replace(/\D/g, '')) * 1000 || null : null,
+        budgetMin,
+        budgetMax
     };
     
     const [insertedVisit] = await db.insert(visits).values(newVisit).returning();
@@ -70,7 +88,7 @@ export async function createVisitorAndVisit(visitorData: VisitorIntakeForm) {
  */
 export async function getActiveVisits(): Promise<VisitWithVisitor[]> {
     const activeVisits = await db.query.visits.findMany({
-        where: eq(visits.endedAt, null),
+        where: isNull(visits.endedAt),
         with: {
             visitor: true,
             host: true,
@@ -109,22 +127,15 @@ export async function getInventory() {
 
 /**
  * Fetches aggregated analytics data from the database.
- * @returns A promise that resolves to an object containing summary, lead score, and objection data.
+ * @returns A promise that resolves to an object containing all visits, lead score data, and objection data.
  */
 export async function getAnalyticsData() {
-    const allVisits = await db.query.visits.findMany();
-
-    const summary = allVisits.reduce((acc, visit) => {
-        acc.totalVisitors += 1;
-        if (visit.stage === 'Hot Now') {
-            acc.hotLeads += 1;
-            acc.pipeline += visit.budgetMax || visit.budgetMin || 0;
-        } else if (visit.stage === 'Researching') {
-            acc.pipeline += visit.budgetMin || 0;
+    const allVisits = await db.query.visits.findMany({
+        with: {
+            visitor: true,
+            host: true,
         }
-        return acc;
-    }, { totalVisitors: 0, hotLeads: 0, holds: 0, pipeline: 0 });
-
+    });
 
     const leadScoreData = allVisits.reduce((acc, visit) => {
         const stage = visit.stage || 'Researching';
@@ -135,7 +146,15 @@ export async function getAnalyticsData() {
             acc.push({ name: stage, value: 1 });
         }
         return acc;
-    }, [] as { name: string, value: number }[]);
+    }, [] as { name: VisitStage, value: number }[]);
+
+    // Ensure all stages are present in the data, even if they have a value of 0
+    const allStages: VisitStage[] = ['Hot Now', 'Researching', 'Just Looking'];
+    allStages.forEach(stage => {
+        if (!leadScoreData.find(item => item.name === stage)) {
+            leadScoreData.push({ name: stage, value: 0 });
+        }
+    });
 
 
     const objectionData = [
@@ -146,7 +165,7 @@ export async function getAnalyticsData() {
         { name: 'Location', value: 2 },
     ];
 
-    return { summary, leadScoreData, objectionData };
+    return { allVisits, leadScoreData, objectionData };
 }
 
 /**

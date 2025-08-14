@@ -4,6 +4,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import type { ChartConfig } from "@/components/ui/chart"
 import { getAnalyticsData } from "@/lib/actions";
+import { summarizeDay } from "@/ai/flows/summarize-day";
+import { Bot } from "lucide-react";
 
 const leadScoreChartConfig = {
   value: {
@@ -32,11 +34,20 @@ const objectionChartConfig = {
 
 
 export async function AnalyticsTab() {
-  const { summary, leadScoreData, objectionData } = await getAnalyticsData();
+  const { allVisits, leadScoreData, objectionData } = await getAnalyticsData();
+
+  const dailySummary = await summarizeDay({ 
+      visitors: allVisits.map(v => ({
+          name: v.visitor.name || 'Unknown',
+          status: v.stage || 'Just Looking',
+          budget: v.budgetMin && v.budgetMax ? `$${v.budgetMin/1000}k - $${v.budgetMax/1000}k` : (v.budgetMin ? `$${v.budgetMin/1000}k+` : 'Not specified'),
+          mustHave: v.mustHave || 'Not specified'
+      }))
+  });
 
   return (
-    <div className="grid gap-6 md:grid-cols-2">
-      <Card>
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <Card className="lg:col-span-2">
         <CardHeader>
           <CardTitle>Lead Funnel</CardTitle>
           <CardDescription>Breakdown of current visitor statuses.</CardDescription>
@@ -55,7 +66,7 @@ export async function AnalyticsTab() {
             </ChartContainer>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="lg:col-span-2">
         <CardHeader>
           <CardTitle>Objection Trends</CardTitle>
           <CardDescription>Most common customer objections this month.</CardDescription>
@@ -72,27 +83,30 @@ export async function AnalyticsTab() {
             </ChartContainer>
         </CardContent>
       </Card>
-      <Card className="md:col-span-2">
+      <Card className="md:col-span-2 lg:col-span-4">
         <CardHeader>
-            <CardTitle>Today's Shift Summary</CardTitle>
-            <CardDescription>Sarah P. - South Edmonton Showhome</CardDescription>
+            <CardTitle className="flex items-center"><Bot className="w-5 h-5 mr-2 text-primary" /> Today's Shift Summary</CardTitle>
+            <CardDescription>AI-generated overview of today's visitors and key metrics.</CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-4 text-center sm:grid-cols-4">
-            <div>
-                <p className="text-3xl font-bold text-primary">{summary.totalVisitors}</p>
-                <p className="text-sm text-muted-foreground">Visitors</p>
-            </div>
-            <div>
-                <p className="text-3xl font-bold text-destructive">{summary.hotLeads}</p>
-                <p className="text-sm text-muted-foreground">Hot Leads</p>
-            </div>
-             <div>
-                <p className="text-3xl font-bold text-accent">{summary.holds}</p>
-                <p className="text-sm text-muted-foreground">Holds</p>
-            </div>
-             <div>
-                <p className="text-3xl font-bold">${(summary.pipeline / 1000000).toFixed(1)}M</p>
-                <p className="text-sm text-muted-foreground">Pipeline</p>
+        <CardContent>
+            <p className="mb-6 text-muted-foreground">{dailySummary.summary}</p>
+            <div className="grid grid-cols-2 gap-4 text-center sm:grid-cols-4">
+                <div>
+                    <p className="text-3xl font-bold text-primary">{allVisits.length}</p>
+                    <p className="text-sm text-muted-foreground">Total Visitors</p>
+                </div>
+                <div>
+                    <p className="text-3xl font-bold text-destructive">{leadScoreData.find(d => d.name === 'Hot Now')?.value || 0}</p>
+                    <p className="text-sm text-muted-foreground">Hot Leads</p>
+                </div>
+                <div>
+                    <p className="text-3xl font-bold text-accent">{dailySummary.holds}</p>
+                    <p className="text-sm text-muted-foreground">Holds</p>
+                </div>
+                <div>
+                    <p className="text-3xl font-bold">${(dailySummary.pipeline / 1000000).toFixed(1)}M</p>
+                    <p className="text-sm text-muted-foreground">Pipeline</p>
+                </div>
             </div>
         </CardContent>
       </Card>
