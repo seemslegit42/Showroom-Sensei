@@ -5,6 +5,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Showhome Sensei',
   description: 'AI-powered app for new home sales hosts',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
