@@ -1,8 +1,9 @@
 
-import type { Visitor } from '@/lib/db/schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Flame, Search, Eye, Clock, User } from 'lucide-react';
+import type { VisitWithVisitor } from '@/lib/types';
+import { format } from 'date-fns';
 
 const statusIcons: { [key: string]: React.ReactNode } = {
   'Hot Now': <Flame className="w-4 h-4" />,
@@ -16,39 +17,39 @@ const statusColors: { [key: string]: 'destructive' | 'secondary' | 'outline' } =
   'Just Looking': 'outline',
 };
 
-// This type is a placeholder. In a real app, you would define this
-// based on your actual data structure from the database.
-type VisitorDisplayData = {
-    id: string;
-    name: string;
-    status: 'Hot Now' | 'Researching' | 'Just Looking';
-    checkInTime: string;
-    agent: string;
-    mustHave?: string;
-}
 
-export function VisitorDetails({ visitor }: { visitor: VisitorDisplayData }) {
+export function VisitorDetails({ visit }: { visit: VisitWithVisitor }) {
+  const checkInTime = visit.startedAt ? format(new Date(visit.startedAt), 'p') : 'N/A';
+  const agentName = visit.host?.name || 'Unassigned';
+  const status = visit.stage || 'Researching';
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{visitor.name}</CardTitle>
+        <CardTitle>{visit.visitor.name}</CardTitle>
         <CardDescription>Visitor Information</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center">
-          <Badge variant={statusColors[visitor.status]} className="flex items-center gap-2 py-1 px-3">
-            {statusIcons[visitor.status]}
-            {visitor.status}
+          <Badge variant={statusColors[status]} className="flex items-center gap-2 py-1 px-3">
+            {statusIcons[status]}
+            {status}
           </Badge>
         </div>
         <div className="flex items-center text-sm text-muted-foreground">
           <Clock className="w-4 h-4 mr-2" />
-          <span>Checked in at {visitor.checkInTime}</span>
+          <span>Checked in at {checkInTime}</span>
         </div>
         <div className="flex items-center text-sm text-muted-foreground">
           <User className="w-4 h-4 mr-2" />
-          <span>Assigned to {visitor.agent}</span>
+          <span>Assigned to {agentName}</span>
         </div>
+        {visit.mustHave && (
+            <div className="p-3 rounded-md bg-muted/50">
+                <p className="text-sm font-semibold">Must-Have Feature</p>
+                <p className="text-sm text-muted-foreground">{visit.mustHave}</p>
+            </div>
+        )}
       </CardContent>
     </Card>
   );

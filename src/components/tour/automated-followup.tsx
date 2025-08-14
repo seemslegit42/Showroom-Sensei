@@ -12,19 +12,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { useToast } from "@/hooks/use-toast";
 import Image from 'next/image';
+import type { VisitWithVisitor } from '@/lib/types';
 
-// This type is a placeholder. In a real app, you would define this
-// based on your actual data structure from the database.
-type VisitorDisplayData = {
-    id: string;
-    name: string;
-    status: 'Hot Now' | 'Researching' | 'Just Looking';
-    checkInTime: string;
-    agent: string;
-    mustHave?: string;
-}
-
-export function AutomatedFollowup({ visitor }: { visitor: VisitorDisplayData }) {
+export function AutomatedFollowup({ visit }: { visit: VisitWithVisitor }) {
   const [notes, setNotes] = useState('');
   const [preferences, setPreferences] = useState('');
   const [photos, setPhotos] = useState<string[]>([]);
@@ -86,10 +76,11 @@ export function AutomatedFollowup({ visitor }: { visitor: VisitorDisplayData }) 
     setRecap(null);
     try {
       const result = await generateVisitRecap({
-        customerName: visitor.name,
+        customerName: visit.visitor.name || 'Valued Customer',
         customerPreferences: preferences,
         notes: notes,
         photosDataUris: photos,
+        // In a real app, this would be dynamically pulled from inventory
         availableHomes: 'The Aspen, The Birch, The Cedar',
       });
       setRecap(result);
@@ -111,7 +102,7 @@ export function AutomatedFollowup({ visitor }: { visitor: VisitorDisplayData }) 
   const handleSend = () => {
     toast({
         title: "Email Sent!",
-        description: `Follow-up has been sent to ${visitor.name}.`,
+        description: `Follow-up has been sent to ${visit.visitor.name}.`,
     })
   }
 
@@ -195,7 +186,7 @@ export function AutomatedFollowup({ visitor }: { visitor: VisitorDisplayData }) 
                     <Textarea value={recap.recap} readOnly rows={8} className="text-base bg-muted" />
                     <Button className="w-full mt-4" onClick={handleSend}>
                         <Send />
-                        Send to {visitor.name}
+                        Send to {visit.visitor.name}
                     </Button>
                 </div>
             )}

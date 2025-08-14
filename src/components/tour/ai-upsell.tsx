@@ -10,22 +10,12 @@ import { Button } from '@/components/ui/button';
 import { Bot, Wand2, Lightbulb } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from "@/hooks/use-toast"
-
-// This type is a placeholder. In a real app, you would define this
-// based on your actual data structure from the database.
-type VisitorDisplayData = {
-    id: string;
-    name: string;
-    status: 'Hot Now' | 'Researching' | 'Just Looking';
-    checkInTime: string;
-    agent: string;
-    mustHave?: string;
-}
+import type { VisitWithVisitor } from '@/lib/types';
 
 
-export function AiUpsell({ visitor, currentSelections }: { visitor: VisitorDisplayData, currentSelections?: string }) {
+export function AiUpsell({ visit, currentSelections }: { visit: VisitWithVisitor, currentSelections?: string }) {
   const [behavior, setBehavior] = useState('');
-  const [preferences, setPreferences] = useState(visitor.mustHave || '');
+  const [preferences, setPreferences] = useState(visit.mustHave || '');
   const [suggestions, setSuggestions] = useState<UpsellSuggestionsOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();

@@ -1,3 +1,4 @@
+
 import {
   timestamp,
   pgTable,
@@ -14,7 +15,7 @@ import type { AdapterAccount } from 'next-auth/adapters';
 
 export const roles = pgEnum('roles', ['HOST', 'MANAGER', 'ADMIN']);
 export const channels = pgEnum('channels', ['EMAIL', 'SMS']);
-export const visitStages = pgEnum('visit_stages', ['JUST_LOOKING', 'RESEARCHING', 'HOT']);
+export const visitStages = pgEnum('visit_stages', ['Just Looking', 'Researching', 'Hot Now']);
 export const lotStatuses = pgEnum('lot_statuses', ['AVAILABLE', 'HOLD', 'SOLD']);
 export const wishlistItemTypes = pgEnum('wishlist_item_types', ['MODEL', 'OPTION', 'LOT']);
 export const followupStatuses = pgEnum('followup_statuses', ['QUEUED', 'SENT', 'FAILED']);
@@ -102,8 +103,7 @@ export const userTenants = pgTable(
 export const inventoryModels = pgTable('inventory_model', {
   id: serial('id').primaryKey(),
   tenantId: integer('tenantId')
-    .notNull()
-    .references(() => tenants.id, { onDelete: 'cascade' }),
+    .notNull(),
   name: text('name').notNull(),
   basePrice: decimal('basePrice', { precision: 12, scale: 2 }).notNull(),
   beds: decimal('beds', { precision: 3, scale: 1 }).notNull(),
@@ -133,9 +133,8 @@ export const options = pgTable('option', {
 
 export const visitors = pgTable('visitor', {
     id: serial('id').primaryKey(),
-    tenantId: integer('tenantId').references(() => tenants.id),
-    firstName: text('firstName'),
-    lastName: text('lastName'),
+    tenantId: integer('tenantId'),
+    name: text('name'),
     email: text('email'),
     phone: text('phone'),
 });
@@ -153,7 +152,7 @@ export const consentLogs = pgTable('consent_log', {
 
 export const visits = pgTable('visit', {
     id: serial('id').primaryKey(),
-    tenantId: integer('tenantId').notNull().references(() => tenants.id),
+    tenantId: integer('tenantId').notNull(),
     visitorId: integer('visitorId').notNull().references(() => visitors.id),
     hostUserId: text('hostUserId').references(() => users.id),
     stage: visitStages('stage'),
@@ -209,10 +208,23 @@ export const objectionLogs = pgTable('objection_log', {
 
 export const eventLogs = pgTable('event_log', {
     id: serial('id').primaryKey(),
-    tenantId: integer('tenantId').references(() => tenants.id),
+    tenantId: integer('tenantId'),
     actorType: actorTypes('actorType'),
     actorId: text('actorId'),
     type: text('type'),
     payloadJson: json('payloadJson'),
     createdAt: timestamp('createdAt', { withTimezone: true, mode: 'date' }).defaultNow(),
 });
+
+
+export type User = typeof users.$inferSelect;
+export type UserInsert = typeof users.$inferInsert;
+
+export type Visitor = typeof visitors.$inferSelect;
+export type VisitorInsert = typeof visitors.$inferInsert;
+
+export type Visit = typeof visits.$inferSelect;
+export type VisitInsert = typeof visits.$inferInsert;
+
+export type InventoryModel = typeof inventoryModels.$inferSelect;
+export type InventoryModelInsert = typeof inventoryModels.$inferInsert;

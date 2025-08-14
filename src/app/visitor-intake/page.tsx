@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -12,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Bot, Send, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { triageVisitor, type TriageVisitorInput } from '@/ai/flows/triage-visitor';
+import { createVisitorAndVisit, seedDatabase } from '@/lib/actions';
 
 export default function VisitorIntakePage() {
     const router = useRouter();
@@ -35,21 +37,54 @@ export default function VisitorIntakePage() {
 
         setIsLoading(true);
 
+        // Temporary seeding mechanism
+        if (name === 'Seed Database') {
+            try {
+                await seedDatabase();
+                toast({
+                    title: 'Database Seeded!',
+                    description: 'Sample data has been added. You can now use the app.',
+                });
+                router.push('/dashboard');
+            } catch(error) {
+                 console.error("Error seeding database:", error);
+                 toast({
+                    title: 'Seeding Failed',
+                    description: (error as Error).message,
+                    variant: 'destructive',
+                });
+            } finally {
+                setIsLoading(false);
+            }
+            return;
+        }
+
+
         try {
             const triageInput: TriageVisitorInput = {
                 budget: budget || undefined,
                 timeline: timeline || undefined,
                 mustHave: mustHave || undefined,
             }
-            const result = await triageVisitor(triageInput);
+            const triageResult = await triageVisitor(triageInput);
+
+            const visitorData = {
+                name,
+                budget,
+                timeline,
+                mustHave,
+                status: triageResult.status,
+            }
+
+            const newVisit = await createVisitorAndVisit(visitorData);
 
             toast({
-                title: `${name} triaged as: ${result.status}`,
-                description: `${result.reasoning}. Redirecting to dashboard...`,
+                title: `${name} triaged as: ${triageResult.status}`,
+                description: `${triageResult.reasoning}. Redirecting to tour...`,
             });
-            // In a real app, you'd save this data.
-            // For now, we'll just redirect to the main page.
-            setTimeout(() => router.push('/dashboard'), 2000);
+            
+            router.push(`/visitors/${newVisit.id}`);
+
         } catch(error) {
             console.error("Error triaging visitor:", error);
             toast({
@@ -77,7 +112,7 @@ export default function VisitorIntakePage() {
                     <CardContent className="space-y-4">
                         <div>
                             <Label htmlFor="name">What's your name?</Label>
-                            <Input id="name" placeholder="e.g., The Johnson Family" value={name} onChange={(e) => setName(e.target.value)} required />
+                            <Input id="name" placeholder="e.g., The Johnson Family, or type 'Seed Database' to start" value={name} onChange={(e) => setName(e.target.value)} required />
                         </div>
                         <div>
                             <Label htmlFor="budget">What's your budget?</Label>
@@ -114,7 +149,7 @@ export default function VisitorIntakePage() {
                     </CardContent>
                     <CardFooter className="flex flex-col gap-4">
                         <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading ? 'Triaging with AI...' : <><Wand2 /> Start My Tour </> }
+                            {isLoading ? 'Processing...' : <><Wand2 /> Start My Tour </> }
                         </Button>
                         <Link href="/dashboard" className="w-full">
                             <Button variant="outline" className="w-full" disabled={isLoading}>

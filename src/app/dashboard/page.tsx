@@ -43,7 +43,7 @@ export default function DashboardPage() {
               </Tooltip>
             </TooltipProvider>
             <Avatar>
-              <AvatarImage src={session?.user?.image ?? `https://placehold.co/100x100.png`} data-ai-hint="woman portrait" alt={userName} />
+              <AvatarImage src={session?.user?.image ?? undefined} data-ai-hint="woman portrait" alt={userName} />
               <AvatarFallback>{userInitials}</AvatarFallback>
             </Avatar>
         </div>

@@ -1,32 +1,23 @@
 
-"use client"
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { useMemo } from "react"
 import type { ChartConfig } from "@/components/ui/chart"
-
-
-// In a real app, this data would be fetched from your database.
-const visitors: any[] = [];
-const leadScoreData: any[] = [];
-const objectionData: any[] = [];
-
+import { getAnalyticsData } from "@/lib/actions";
 
 const leadScoreChartConfig = {
   value: {
     label: "Visitors",
   },
-  hot: {
+  'Hot Now': {
     label: "Hot Now",
     color: "hsl(var(--destructive))",
   },
-  researching: {
+  'Researching': {
     label: "Researching",
     color: "hsl(var(--primary))",
   },
-  looking: {
+  'Just Looking': {
     label: "Just Looking",
     color: "hsl(var(--accent))",
   },
@@ -40,22 +31,8 @@ const objectionChartConfig = {
 } satisfies ChartConfig
 
 
-export function AnalyticsTab() {
-  const summary = useMemo(() => {
-    const totalVisitors = visitors.length;
-    const hotLeads = visitors.filter(v => v.status === 'Hot Now').length;
-    const holds = 0; // This would come from a database in a real app
-    const pipeline = visitors
-        .filter(v => v.status === 'Hot Now' || v.status === 'Researching')
-        .reduce((acc, v) => acc + 650000, 0); // Using an average home price for demo
-
-    return {
-        totalVisitors,
-        hotLeads,
-        holds,
-        pipeline
-    }
-  }, []);
+export async function AnalyticsTab() {
+  const { summary, leadScoreData, objectionData } = await getAnalyticsData();
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
@@ -71,7 +48,7 @@ export function AnalyticsTab() {
                     <XAxis type="number" hide />
                     <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tickMargin={10} width={80} />
                     <ChartTooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent />} />
-                    <Bar dataKey="value" radius={[0, 4, 4, 0]} >
+                    <Bar dataKey="value" radius={[0, 4, 4, 0]} fill="var(--color-name)">
                         <LabelList dataKey="value" position="right" offset={8} className="fill-foreground" fontSize={12} />
                     </Bar>
                 </BarChart>
