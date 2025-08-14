@@ -16,7 +16,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
     Resend({
-      from: process.env.EMAIL_FROM,
+      from: process.env.EMAIL_FROM || 'noreply@example.com',
       // You can omit the `sendVerificationRequest` function if you're using the default email templates.
       // Otherwise, you can provide your own function to send the verification email.
     }),

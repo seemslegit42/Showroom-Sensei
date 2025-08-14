@@ -32,13 +32,12 @@ export default function DashboardPage() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" onClick={() => signOut({ callbackUrl: '/' })}>
+                  <Button variant="ghost" size="icon" onClick={() => signOut({ callbackUrl: '/' })}>
                       <LogOut />
-                      Sign Out
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Log out of your session.</p>
+                  <p>Sign Out</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
