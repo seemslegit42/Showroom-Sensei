@@ -2,12 +2,13 @@
 
 /**
  * @fileOverview Flow for generating personalized visit recaps for customers.
- * This flow takes customer details, preferences, photos, and notes to create
- * a warm, engaging, and personalized follow-up email.
+ * @description This flow takes customer details, preferences, photos, and notes to create
+ * a warm, engaging, and personalized follow-up email. It's designed to be used
+ * by sales hosts to automate the nurturing process.
  *
- * - generateVisitRecap - A function that generates a personalized visit recap.
- * - VisitRecapInput - The input type for the generateVisitRecap function.
- * - VisitRecapOutput - The return type for the generateVisitRecap function.
+ * @exports generateVisitRecap - A function that generates a personalized visit recap.
+ * @exports VisitRecapInput - The Zod schema for the input of the generateVisitRecap function.
+ * @exports VisitRecapOutput - The Zod schema for the return type of the generateVisitRecap function.
  */
 
 import {ai} from '@/ai/genkit';

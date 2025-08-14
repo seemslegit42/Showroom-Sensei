@@ -66,7 +66,8 @@ export function InventoryTab() {
              <div className="flex flex-col items-center justify-center col-span-full p-8 text-center border-2 border-dashed rounded-lg bg-muted/50">
                 <Info className="w-12 h-12 mb-4 text-muted-foreground" />
                 <h3 className="mb-2 text-xl font-semibold">No Inventory Found</h3>
-                <p className="text-muted-foreground">No inventory models match your search. Try seeding the database!</p>
+                <p className="text-muted-foreground">Try seeding the database to see available home models.</p>
+                <p className="mt-2 text-xs text-muted-foreground">Tip: Go to the Visitor Intake form and type "Seed Database" in the name field.</p>
             </div>
         ) : (
           filteredInventory.map((home, i) => (

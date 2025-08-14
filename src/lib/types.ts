@@ -1,5 +1,5 @@
 
-import type { User, Visitor, Visit, InventoryModel as DbInventoryModel } from './db/schema';
+import type { User, Visitor, Visit, InventoryModel as DbInventoryModel, visitStages } from './db/schema';
 
 export type VisitWithVisitor = Visit & {
     visitor: Visitor;
@@ -8,4 +8,4 @@ export type VisitWithVisitor = Visit & {
 
 export type InventoryModel = DbInventoryModel;
 
-export type VisitStage = 'Hot Now' | 'Researching' | 'Just Looking';
+export type VisitStage = (typeof visitStages.enumValues)[number];

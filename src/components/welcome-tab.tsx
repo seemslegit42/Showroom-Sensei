@@ -57,10 +57,12 @@ export async function WelcomeTab() {
                         </p>
                       </div>
                     </div>
-                    <Badge variant={statusColors[visit.stage!]} className="flex items-center gap-2 py-1 px-3">
-                      {statusIcons[visit.stage!]}
-                      {visit.stage}
-                    </Badge>
+                    {visit.stage && (
+                        <Badge variant={statusColors[visit.stage]} className="flex items-center gap-2 py-1 px-3">
+                            {statusIcons[visit.stage]}
+                            {visit.stage}
+                        </Badge>
+                    )}
                   </CardContent>
                 </Card>
               </Link>

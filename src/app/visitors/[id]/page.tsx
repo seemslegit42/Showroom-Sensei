@@ -18,16 +18,16 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function VisitorTourPage() {
   const params = useParams();
-  const visitorId = params.id as string;
+  const visitId = params.id as string;
   const [visit, setVisit] = useState<VisitWithVisitor | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentSelections, setCurrentSelections] = useState('Standard Finishes');
 
   useEffect(() => {
-    if (visitorId) {
+    if (visitId) {
       setIsLoading(true);
-      getVisitDetails(parseInt(visitorId, 10))
+      getVisitDetails(parseInt(visitId, 10))
         .then(data => {
           if (data) {
             setVisit(data);
@@ -43,7 +43,7 @@ export default function VisitorTourPage() {
           setIsLoading(false);
         });
     }
-  }, [visitorId]);
+  }, [visitId]);
 
 
   if (isLoading) {

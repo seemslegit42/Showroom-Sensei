@@ -2,11 +2,12 @@
 
 /**
  * @fileOverview A flow for triaging new visitors based on their intake form data.
- * This flow helps sales hosts quickly identify the readiness of a potential buyer.
+ * @description This flow helps sales hosts quickly identify the readiness of a potential buyer
+ * by classifying them into 'Hot Now', 'Researching', or 'Just Looking'.
  *
- * - triageVisitor - A function that triages a visitor.
- * - TriageVisitorInput - The input type for the triageVisitor function.
- * - TriageVisitorOutput - The return type for the triageVisitor function.
+ * @exports triageVisitor - A function that triages a visitor.
+ * @exports TriageVisitorInput - The Zod schema for the input of the triageVisitor function.
+ * @exports TriageVisitorOutput - The Zod schema for the return type of the triageVisitor function.
  */
 
 import {ai} from '@/ai/genkit';

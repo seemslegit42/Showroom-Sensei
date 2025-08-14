@@ -1,12 +1,14 @@
 'use server';
+
 /**
- * @fileOverview Provides AI-driven upsell suggestions to sales hosts during a tour,
- * based on visitor behavior, stated preferences, and current selections. The goal is to
- * provide timely, relevant, and helpful recommendations that enhance the visitor's experience.
+ * @fileOverview Provides AI-driven upsell suggestions to sales hosts during a tour.
+ * @description This flow is based on visitor behavior, stated preferences, and current selections.
+ * The goal is to provide timely, relevant, and helpful recommendations that enhance
+ * the visitor's experience and feel like helpful advice, not a hard sell.
  *
- * - getUpsellSuggestions - A function that generates upsell suggestions.
- * - UpsellSuggestionsInput - The input type for the getUpsellSuggestions function.
- * - UpsellSuggestionsOutput - The return type for the getUpsellSuggestions function.
+ * @exports getUpsellSuggestions - A function that generates upsell suggestions.
+ * @exports UpsellSuggestionsInput - The Zod schema for the input of the getUpsellSuggestions function.
+ * @exports UpsellSuggestionsOutput - The Zod schema for the return type of the getUpsellSuggestions function.
  */
 
 import {ai} from '@/ai/genkit';

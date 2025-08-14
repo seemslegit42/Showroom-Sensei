@@ -4,7 +4,7 @@
 import { signIn } from '@/../auth';
 import { db } from './db';
 import { inventoryModels, users, visitors, visits, type Visitor } from './db/schema';
-import type { VisitStage, VisitWithVisitor, VisitorInsert } from './types';
+import type { VisitStage, VisitWithVisitor } from './types';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
@@ -18,35 +18,39 @@ export async function signInWithEmail(email: string) {
   }
 }
 
-/**
- * Creates a new visitor and an associated visit record in the database.
- * @param visitorData - The data for the new visitor and visit.
- * @returns The newly created visit record.
- */
-export async function createVisitorAndVisit(visitorData: {
+interface CreateVisitorData {
     name: string;
     budget: string;
     timeline: string;
     mustHave: string;
     status: VisitStage;
-}) {
+}
+
+/**
+ * Creates a new visitor and an associated visit record in the database.
+ * @param visitorData - The data for the new visitor and visit.
+ * @returns The newly created visit record.
+ */
+export async function createVisitorAndVisit(visitorData: CreateVisitorData) {
     // This is a simplification. In a real app, you'd get the tenant and host user IDs
     // from the session or context.
     const tenantId = 1;
-    const hostUserId = (await db.query.users.findFirst())?.id;
+    const hostUser = await db.query.users.findFirst();
+    if (!hostUser) {
+        throw new Error("No host user found in the database to assign the visit to.");
+    }
 
-    const newVisitor: VisitorInsert = {
+    const newVisitor = {
         name: visitorData.name,
         tenantId,
     };
     
-    const insertedVisitors = await db.insert(visitors).values(newVisitor).returning();
-    const visitor = insertedVisitors[0];
+    const [visitor] = await db.insert(visitors).values(newVisitor).returning();
 
     const newVisit = {
         tenantId,
         visitorId: visitor.id,
-        hostUserId,
+        hostUserId: hostUser.id,
         stage: visitorData.status,
         timeline: visitorData.timeline,
         mustHave: visitorData.mustHave,
@@ -54,11 +58,11 @@ export async function createVisitorAndVisit(visitorData: {
         budgetMax: parseInt(visitorData.budget.split('-')[1]?.replace(/\D/g, '')) * 1000 || null,
     };
     
-    const insertedVisits = await db.insert(visits).values(newVisit).returning();
+    const [insertedVisit] = await db.insert(visits).values(newVisit).returning();
 
     revalidatePath('/dashboard');
 
-    return insertedVisits[0];
+    return insertedVisit;
 }
 
 
@@ -85,6 +89,7 @@ export async function getActiveVisits(): Promise<VisitWithVisitor[]> {
  * @returns A promise that resolves to the visit details, or null if not found.
  */
 export async function getVisitDetails(visitId: number): Promise<VisitWithVisitor | null> {
+    if (isNaN(visitId)) return null;
     const visit = await db.query.visits.findFirst({
         where: eq(visits.id, visitId),
         with: {
@@ -149,15 +154,17 @@ export async function getAnalyticsData() {
 /**
  * A temporary utility function to seed the database with sample data.
  * This should be removed or secured in a real production environment.
+ * It's triggered by a special name in the visitor intake form.
  */
 export async function seedDatabase() {
     console.log("Seeding database...");
 
-    // Clear existing data
+    // Clear existing data in a safe order
     await db.delete(visits);
     await db.delete(visitors);
     await db.delete(inventoryModels);
     await db.delete(users);
+    console.log("Existing data cleared.");
 
     // Seed Users
     await db.insert(users).values([
@@ -181,7 +188,7 @@ export async function seedDatabase() {
         throw new Error("Cannot seed visits without a host user.");
     }
 
-    const visitorsData: Omit<Visitor, 'id' | 'createdAt' | 'tenantId'>[] = [
+    const visitorsData: Omit<Visitor, 'id' | 'tenantId' | 'createdAt'>[] = [
         { name: 'The Miller Family', email: 'miller@test.com', phone: '555-1234' },
         { name: 'Jane & John Smith', email: 'smith@test.com', phone: '555-5678' },
         { name: 'Dr. Evelyn Reed', email: 'reed@test.com', phone: '555-9012' },
@@ -202,4 +209,5 @@ export async function seedDatabase() {
     console.log("Visits seeded.");
     
     revalidatePath('/dashboard');
+    console.log("Paths revalidated. Seeding complete.");
 }
