@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { visitors } from '@/lib/data';
-import { ArrowLeft, Bot, Building, Paintbrush, Home, Mail } from 'lucide-react';
+import { ArrowLeft, Building, Paintbrush } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { VisitorDetails } from '@/components/tour/visitor-details';
 import { AiUpsell } from '@/components/tour/ai-upsell';
