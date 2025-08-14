@@ -69,7 +69,7 @@ export default function VisitorIntakePage() {
                     <CardHeader className="text-center">
                         <div className="flex items-center justify-center gap-2 mb-2">
                             <Bot className="w-8 h-8 text-primary" />
-                            <h1 className="text-2xl font-bold font-headline">Showhome Sidekick</h1>
+                            <h1 className="text-2xl font-bold font-headline">Showhome Sensei</h1>
                         </div>
                         <CardTitle>Welcome!</CardTitle>
                         <CardDescription>Just a few quick questions to personalize your tour.</CardDescription>

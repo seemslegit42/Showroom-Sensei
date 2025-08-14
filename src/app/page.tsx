@@ -11,7 +11,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 border-b shrink-0 bg-background/90 backdrop-blur-sm sm:px-6">
         <div className="flex items-center gap-2">
           <Bot className="w-8 h-8 text-primary"/>
-          <h1 className="text-xl font-bold font-headline">Showhome Sidekick</h1>
+          <h1 className="text-xl font-bold font-headline">Showhome Sensei</h1>
         </div>
         <nav className="flex items-center gap-4">
           <Link href="/login" passHref>
@@ -38,7 +38,7 @@ export default function LandingPage() {
               One tap, look brilliant.
             </h1>
             <p className="max-w-[600px] text-muted-foreground md:text-xl">
-              Turn every showhome visit into a qualified lead. Showhome Sidekick is the in-hand assistant for sales hosts and the intelligence engine for builders.
+              Turn every showhome visit into a qualified lead. Showhome Sensei is the in-hand assistant for sales hosts and the intelligence engine for builders.
             </p>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <Link href="/login" passHref>
@@ -99,7 +99,7 @@ export default function LandingPage() {
         </section>
       </main>
       <footer className="flex flex-col items-center justify-center gap-2 px-4 py-6 text-sm border-t shrink-0 h-fit md:flex-row md:px-6">
-        <p className="text-muted-foreground">&copy; 2025 Showhome Sidekick. All rights reserved.</p>
+        <p className="text-muted-foreground">&copy; 2025 Showhome Sensei. All rights reserved.</p>
       </footer>
     </div>
   );
