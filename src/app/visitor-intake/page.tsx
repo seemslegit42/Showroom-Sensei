@@ -93,7 +93,7 @@ export default function VisitorIntakePage() {
                 variant: 'destructive',
             });
             // Still proceed even if AI fails
-             setTimeout(() => router.push('/dashboard'), 2000);
+            router.push('/dashboard');
         }
     };
 
