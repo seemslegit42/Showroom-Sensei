@@ -45,8 +45,12 @@ export default function VisitorTourPage() {
         <h1 className="text-xl font-bold truncate font-headline">{visitor.name} - Tour</h1>
       </header>
       <main className="flex-1 p-4 sm:p-6">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="space-y-6 lg:col-span-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:grid-flow-col-dense">
+          <div className="space-y-6 lg:col-span-1 lg:col-start-3">
+            <VisitorDetails visitor={visitor} />
+            <AiUpsell currentSelections={currentSelections} />
+          </div>
+          <div className="space-y-6 lg:col-span-2 lg:col-start-1">
             <Tabs defaultValue="configurator" className="w-full">
               <TabsList>
                 <TabsTrigger value="configurator"><Paintbrush className="w-4 h-4 mr-2" />Option Configurator</TabsTrigger>
@@ -60,10 +64,6 @@ export default function VisitorTourPage() {
               </TabsContent>
             </Tabs>
             <AutomatedFollowup visitor={visitor} />
-          </div>
-          <div className="space-y-6 lg:col-span-1">
-            <VisitorDetails visitor={visitor} />
-            <AiUpsell currentSelections={currentSelections} />
           </div>
         </div>
       </main>
