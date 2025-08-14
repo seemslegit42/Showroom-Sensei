@@ -8,24 +8,66 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Mail, Wand2, Paperclip, Send } from 'lucide-react';
+import { Mail, Wand2, Paperclip, Send, Image as ImageIcon, X } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { useToast } from "@/hooks/use-toast";
+import Image from 'next/image';
 
 export function AutomatedFollowup({ visitor }: { visitor: Visitor }) {
   const [notes, setNotes] = useState('');
   const [preferences, setPreferences] = useState('');
+  const [photos, setPhotos] = useState<string[]>([]);
   const [recap, setRecap] = useState<VisitRecapOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      const filePromises = files.map(file => {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            if (typeof reader.result === 'string') {
+              resolve(reader.result);
+            } else {
+              reject(new Error('Failed to read file'));
+            }
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      });
+
+      Promise.all(filePromises)
+        .then(dataUris => {
+          setPhotos(prevPhotos => [...prevPhotos, ...dataUris]);
+          toast({
+            title: `${files.length} photo(s) attached.`
+          })
+        })
+        .catch(error => {
+          console.error("Error reading files:", error);
+          toast({
+            title: "Error attaching photos",
+            description: "There was a problem reading the selected files.",
+            variant: "destructive"
+          })
+        });
+    }
+  }
+
+  const removePhoto = (index: number) => {
+    setPhotos(prevPhotos => prevPhotos.filter((_, i) => i !== index));
+  }
+
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!notes && !preferences) {
+    if (!notes && !preferences && photos.length === 0) {
         toast({
             title: "Missing Information",
-            description: "Please enter some preferences or notes to generate a recap.",
+            description: "Please enter some preferences, notes or attach photos to generate a recap.",
             variant: "destructive"
         })
         return;
@@ -37,7 +79,7 @@ export function AutomatedFollowup({ visitor }: { visitor: Visitor }) {
         customerName: visitor.name,
         customerPreferences: preferences,
         notes: notes,
-        photosDataUris: [],
+        photosDataUris: photos,
         availableHomes: 'The Aspen, The Birch, The Cedar',
       });
       setRecap(result);
@@ -92,12 +134,34 @@ export function AutomatedFollowup({ visitor }: { visitor: Visitor }) {
           <div>
             <Label htmlFor="photos">Attach Photos</Label>
             <div className="flex items-center gap-2">
-                <Input id="photos" type="file" disabled className="cursor-not-allowed"/>
-                <Button type="button" variant="outline" size="icon" disabled>
-                    <Paperclip />
-                </Button>
+                <Input id="photos" type="file" onChange={handleFileChange} multiple accept="image/*" className="hidden" />
+                <Label htmlFor="photos" className="w-full">
+                  <Button type="button" variant="outline" className="w-full" asChild>
+                    <span className="cursor-pointer">
+                      <Paperclip />
+                      Select Photos
+                    </span>
+                  </Button>
+                </Label>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Photo uploads are disabled in this demo.</p>
+             {photos.length > 0 && (
+                <div className="grid grid-cols-3 gap-2 mt-4 sm:grid-cols-4">
+                    {photos.map((photo, index) => (
+                        <div key={index} className="relative group">
+                           <Image src={photo} alt={`Attached photo ${index + 1}`} width={100} height={100} className="object-cover w-full rounded-md aspect-square" />
+                           <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => removePhoto(index)}
+                            >
+                                <X className="w-4 h-4"/>
+                           </Button>
+                        </div>
+                    ))}
+                </div>
+            )}
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
             <Wand2 />
