@@ -20,7 +20,7 @@ export default function DashboardPage() {
         </div>
         <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => signOut({ callbackUrl: '/' })}>
-                <LogOut className="w-4 h-4 mr-2" />
+                <LogOut />
                 Sign Out
             </Button>
             <Avatar>
@@ -33,15 +33,15 @@ export default function DashboardPage() {
         <Tabs defaultValue="welcome" className="w-full">
           <TabsList className="grid w-full grid-cols-1 sm:w-auto sm:grid-cols-3">
             <TabsTrigger value="welcome">
-              <Users className="w-4 h-4 mr-2" />
+              <Users />
               Welcome
             </TabsTrigger>
             <TabsTrigger value="inventory">
-              <Home className="w-4 h-4 mr-2" />
+              <Home />
               Inventory
             </TabsTrigger>
             <TabsTrigger value="analytics">
-              <AreaChart className="w-4 h-4 mr-2" />
+              <AreaChart />
               Analytics
             </TabsTrigger>
           </TabsList>

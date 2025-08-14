@@ -25,7 +25,7 @@ export default function VisitorTourPage() {
         <p className="mb-4 text-lg">Visitor not found.</p>
         <Link href="/dashboard">
           <Button variant="outline">
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft />
             Back to Dashboard
           </Button>
         </Link>
@@ -38,7 +38,7 @@ export default function VisitorTourPage() {
       <header className="sticky top-0 z-20 flex items-center h-16 px-4 border-b shrink-0 bg-background/90 backdrop-blur-sm sm:px-6">
         <Link href="/dashboard" className="mr-4">
           <Button variant="outline" size="icon">
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft />
             <span className="sr-only">Back</span>
           </Button>
         </Link>
@@ -53,8 +53,8 @@ export default function VisitorTourPage() {
           <div className="space-y-6 lg:col-span-2 lg:col-start-1">
             <Tabs defaultValue="configurator" className="w-full">
               <TabsList>
-                <TabsTrigger value="configurator"><Paintbrush className="w-4 h-4 mr-2" />Option Configurator</TabsTrigger>
-                <TabsTrigger value="insights"><Building className="w-4 h-4 mr-2" />Neighborhood</TabsTrigger>
+                <TabsTrigger value="configurator"><Paintbrush />Option Configurator</TabsTrigger>
+                <TabsTrigger value="insights"><Building />Neighborhood</TabsTrigger>
               </TabsList>
               <TabsContent value="configurator" className="mt-4">
                 <OptionConfigurator onSelectionChange={setCurrentSelections} />

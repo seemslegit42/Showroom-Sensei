@@ -114,11 +114,11 @@ export default function VisitorIntakePage() {
                     </CardContent>
                     <CardFooter className="flex flex-col gap-4">
                         <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading ? 'Triaging with AI...' : <><Wand2 className="w-4 h-4 mr-2" /> Start My Tour </> }
+                            {isLoading ? 'Triaging with AI...' : <><Wand2 /> Start My Tour </> }
                         </Button>
                         <Link href="/dashboard" className="w-full">
                             <Button variant="outline" className="w-full" disabled={isLoading}>
-                               <ArrowLeft className="w-4 h-4 mr-2" />
+                               <ArrowLeft />
                                 Back to Dashboard
                             </Button>
                         </Link>

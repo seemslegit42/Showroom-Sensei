@@ -74,7 +74,7 @@ export function AiUpsell({ currentSelections }: { currentSelections?: string }) 
             />
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
-            <Wand2 className="w-4 h-4 mr-2" />
+            <Wand2 />
             {isLoading ? 'Thinking...' : 'Get Suggestions'}
           </Button>
         </form>

@@ -106,7 +106,7 @@ export default function LoginPage() {
                     </CardContent>
                     <CardFooter>
                         <Button type="submit" className="w-full" disabled={isLoading || !email}>
-                            {isLoading ? 'Sending...' : <><LogIn className="w-4 h-4 mr-2" /> Send Magic Link </> }
+                            {isLoading ? 'Sending...' : <><LogIn /> Send Magic Link </> }
                         </Button>
                     </CardFooter>
                 </form>

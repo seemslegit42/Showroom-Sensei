@@ -16,13 +16,13 @@ export default function LandingPage() {
         <nav className="flex items-center gap-4">
           <Link href="/login" passHref>
             <Button variant="outline">
-              <LogIn className="w-4 h-4 mr-2" />
+              <LogIn />
               Host Sign-In
             </Button>
           </Link>
           <Link href="/visitor-intake" passHref>
             <Button>
-              <UserPlus className="w-4 h-4 mr-2" />
+              <UserPlus />
               Start Your Tour
             </Button>
           </Link>

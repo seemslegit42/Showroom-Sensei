@@ -27,7 +27,7 @@ export function WelcomeTab() {
         <CardTitle>Active Visitors</CardTitle>
         <Link href="/visitor-intake">
           <Button>
-            <PlusCircle className="w-4 h-4 mr-2" />
+            <PlusCircle />
             New Visitor Intake
           </Button>
         </Link>

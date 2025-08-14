@@ -93,13 +93,13 @@ export function AutomatedFollowup({ visitor }: { visitor: Visitor }) {
             <div className="flex items-center gap-2">
                 <Input id="photos" type="file" disabled className="cursor-not-allowed"/>
                 <Button type="button" variant="outline" size="icon" disabled>
-                    <Paperclip className="w-4 h-4" />
+                    <Paperclip />
                 </Button>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">Photo uploads are disabled in this demo.</p>
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
-            <Wand2 className="w-4 h-4 mr-2" />
+            <Wand2 />
             {isLoading ? 'Generating Recap...' : 'Generate AI Recap'}
           </Button>
         </form>
@@ -119,7 +119,7 @@ export function AutomatedFollowup({ visitor }: { visitor: Visitor }) {
                 <div>
                     <Textarea value={recap.recap} readOnly rows={8} className="text-base bg-muted" />
                     <Button className="w-full mt-4" onClick={handleSend}>
-                        <Send className="w-4 h-4 mr-2" />
+                        <Send />
                         Send to {visitor.name}
                     </Button>
                 </div>
