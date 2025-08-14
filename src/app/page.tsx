@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Bot, LogIn, UserPlus } from 'lucide-react';
+import { Bot, LogIn, UserPlus, Mail, AreaChart, Wand2, Users } from 'lucide-react';
 import Image from 'next/image';
 
 export default function LandingPage() {
@@ -63,33 +63,37 @@ export default function LandingPage() {
             <div className="container px-4 mx-auto md:px-6">
                 <div className="flex flex-col items-center justify-center space-y-4 text-center">
                     <div className="space-y-2">
-                        <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-5xl">The Four Pillars of Success</h2>
+                        <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-5xl">A Smarter Way to Sell</h2>
                         <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                             From the moment a visitor arrives to the final follow-up, our platform streamlines every interaction.
                         </p>
                     </div>
                 </div>
                 <div className="grid items-start max-w-5xl gap-8 mx-auto mt-12 sm:grid-cols-2 md:gap-12 lg:max-w-none lg:grid-cols-4">
-                    <Card>
+                    <Card className="flex flex-col">
                         <CardContent className="p-6 space-y-2">
+                            <Users className="w-8 h-8 mb-2 text-primary" />
                             <h3 className="text-lg font-bold">1. Welcome & Triage</h3>
                             <p className="text-sm text-muted-foreground">Frictionless QR/NFC intake instantly classifies visitors as Hot, Researching, or Just Looking.</p>
                         </CardContent>
                     </Card>
-                    <Card>
+                    <Card className="flex flex-col">
                         <CardContent className="p-6 space-y-2">
+                            <Wand2 className="w-8 h-8 mb-2 text-primary" />
                             <h3 className="text-lg font-bold">2. Intelligent Tour</h3>
                             <p className="text-sm text-muted-foreground">Access live inventory, visualize options, and get AI-powered upsell nudges in real-time.</p>
                         </CardContent>
                     </Card>
-                    <Card>
+                    <Card className="flex flex-col">
                         <CardContent className="p-6 space-y-2">
+                             <Mail className="w-8 h-8 mb-2 text-primary" />
                             <h3 className="text-lg font-bold">3. Automated Nurturing</h3>
                             <p className="text-sm text-muted-foreground">Send personalized recaps with photos and details before visitors even leave the driveway.</p>
                         </CardContent>
                     </Card>
-                    <Card>
+                    <Card className="flex flex-col">
                         <CardContent className="p-6 space-y-2">
+                            <AreaChart className="w-8 h-8 mb-2 text-primary" />
                             <h3 className="text-lg font-bold">4. Big Picture Analytics</h3>
                             <p className="text-sm text-muted-foreground">Get daily summaries, lead scoring, and objection trend tracking to optimize your sales strategy.</p>
                         </CardContent>
