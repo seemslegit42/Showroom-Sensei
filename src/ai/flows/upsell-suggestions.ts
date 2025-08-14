@@ -1,7 +1,8 @@
-// Upsell suggestions flow
 'use server';
 /**
- * @fileOverview Provides AI-driven upsell suggestions to sales hosts during a tour, based on visitor behavior and stated preferences.
+ * @fileOverview Provides AI-driven upsell suggestions to sales hosts during a tour,
+ * based on visitor behavior, stated preferences, and current selections. The goal is to
+ * provide timely, relevant, and helpful recommendations that enhance the visitor's experience.
  *
  * - getUpsellSuggestions - A function that generates upsell suggestions.
  * - UpsellSuggestionsInput - The input type for the getUpsellSuggestions function.
@@ -15,18 +16,18 @@ const UpsellSuggestionsInputSchema = z.object({
   visitorBehavior: z
     .string()
     .describe(
-      'Observed behavior of the visitor during the tour, including their interactions, questions, and reactions.'
+      'Observed behavior and direct quotes from the visitor during the tour. e.g., "They spent a lot of time in the kitchen and mentioned they love to cook."'
     ),
   statedPreferences: z
     .string()
     .describe(
-      'Stated preferences of the visitor regarding home features, options, and upgrades.'
+      'Stated preferences of the visitor from the intake form or conversation. e.g., "Wants a home office and a large backyard."'
     ),
   currentSelections: z
     .string()
     .optional()
     .describe(
-      'The options the visitor has currently selected.'
+      'The options or finishes the visitor is currently looking at in the configurator. e.g., "Standard Finishes" or "Upgraded Hardwood Package".'
     ),
 });
 export type UpsellSuggestionsInput = z.infer<typeof UpsellSuggestionsInputSchema>;
@@ -35,12 +36,12 @@ const UpsellSuggestionsOutputSchema = z.object({
   suggestions: z
     .array(z.string())
     .describe(
-      'A list of upsell suggestions tailored to the visitor, including specific options and upgrades to recommend.'
+      'A list of 2-3 concise, actionable upsell suggestions tailored to the visitor. Each suggestion should be a specific feature, option, or lot to recommend.'
     ),
   reasoning: z
     .string()
     .describe(
-      'The AI reasoning behind the suggestions, explaining why each option is recommended based on the visitor data.'
+      'The AI reasoning behind the suggestions, explaining concisely why these options are a good fit for this specific visitor.'
     ),
 });
 export type UpsellSuggestionsOutput = z.infer<typeof UpsellSuggestionsOutputSchema>;
@@ -53,19 +54,23 @@ const prompt = ai.definePrompt({
   name: 'upsellSuggestionsPrompt',
   input: {schema: UpsellSuggestionsInputSchema},
   output: {schema: UpsellSuggestionsOutputSchema},
-  prompt: `You are an AI assistant for new home sales, providing upsell suggestions to sales hosts during tours.
+  prompt: `You are an AI assistant for a new home sales host, providing real-time upsell "nudges" during a customer tour.
+  Your goal is to be helpful and insightful, not pushy.
 
-  Based on the visitor's behavior, stated preferences, and current selections, suggest relevant upsell options.
+  Analyze the following information about the visitor:
+  - Observed Behavior & Cues: {{{visitorBehavior}}}
+  - Stated Preferences: {{{statedPreferences}}}
+  - Currently Viewing: {{{currentSelections}}}
 
-  Visitor Behavior: {{{visitorBehavior}}}
-  Stated Preferences: {{{statedPreferences}}}
-  Current Selections: {{{currentSelections}}}
+  Based on this, generate a list of 2-3 specific, relevant upsell suggestions.
+  These could be structural options, design upgrades, or a specific lot that fits their needs.
+  Also, provide a brief reasoning for your suggestions.
 
-  Provide a list of concise upsell suggestions and the reasoning behind each suggestion.
-  Format the output as a JSON object with "suggestions" (an array of suggestions) and "reasoning" (the AI reasoning).
-  Make the suggestions based on what the client has said they like so far. For example, if they liked a lot of backyard space, suggest buying a lot that has an even larger backyard, or an upgrade package to add a deck, patio, or outdoor kitchen.
-  Be mindful of not over-selling the client based on budget and other signals they may have provided.
-  DO NOT be overly aggressive, just suggest options that may interest them and improve their home and lifestyle.
+  Example:
+  - If Behavior is "loved the backyard space" and Preferences is "wants a place to entertain", a good suggestion would be "Suggest the outdoor kitchen package" with the reasoning "This directly aligns with their love for the backyard and desire to entertain guests."
+  - If Currently Viewing is "Standard Finishes" and Preferences is "wants a durable floor for their dog", a good suggestion is "Recommend the luxury vinyl plank flooring upgrade" with reasoning "It's a stylish and highly durable option perfect for pets, addressing their specific need."
+
+  Be mindful of not over-selling. The suggestions should feel like helpful advice that enhances their future home and lifestyle.
   `,
 });
 

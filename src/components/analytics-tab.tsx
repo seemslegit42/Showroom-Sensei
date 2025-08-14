@@ -3,9 +3,26 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { leadScoreData, leadScoreChartConfig, objectionData, objectionChartConfig } from "@/lib/data"
+import { leadScoreData, leadScoreChartConfig, objectionData, objectionChartConfig, visitors } from "@/lib/data"
+import { useMemo } from "react"
 
 export function AnalyticsTab() {
+  const summary = useMemo(() => {
+    const totalVisitors = visitors.length;
+    const hotLeads = visitors.filter(v => v.status === 'Hot Now').length;
+    const holds = 1; // This would come from a database in a real app
+    const pipeline = visitors
+        .filter(v => v.status === 'Hot Now' || v.status === 'Researching')
+        .reduce((acc, v) => acc + 650000, 0); // Using an average home price for demo
+
+    return {
+        totalVisitors,
+        hotLeads,
+        holds,
+        pipeline
+    }
+  }, []);
+
   return (
     <div className="grid gap-6 md:grid-cols-2">
       <Card>
@@ -51,19 +68,19 @@ export function AnalyticsTab() {
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-4 text-center sm:grid-cols-4">
             <div>
-                <p className="text-3xl font-bold text-primary">12</p>
+                <p className="text-3xl font-bold text-primary">{summary.totalVisitors}</p>
                 <p className="text-sm text-muted-foreground">Visitors</p>
             </div>
             <div>
-                <p className="text-3xl font-bold text-destructive">3</p>
+                <p className="text-3xl font-bold text-destructive">{summary.hotLeads}</p>
                 <p className="text-sm text-muted-foreground">Hot Leads</p>
             </div>
              <div>
-                <p className="text-3xl font-bold text-accent">1</p>
+                <p className="text-3xl font-bold text-accent">{summary.holds}</p>
                 <p className="text-sm text-muted-foreground">Holds</p>
             </div>
              <div>
-                <p className="text-3xl font-bold">$1.2M</p>
+                <p className="text-3xl font-bold">${(summary.pipeline / 1000000).toFixed(1)}M</p>
                 <p className="text-sm text-muted-foreground">Pipeline</p>
             </div>
         </CardContent>

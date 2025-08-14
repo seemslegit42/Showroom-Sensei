@@ -52,7 +52,7 @@ export function InventoryTab() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full" variant="outline">View Details</Button>
+              <Button className="w-full" variant="outline" disabled>View Details</Button>
             </CardFooter>
           </Card>
         ))}

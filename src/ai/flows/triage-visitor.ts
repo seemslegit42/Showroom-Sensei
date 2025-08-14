@@ -2,6 +2,7 @@
 
 /**
  * @fileOverview A flow for triaging new visitors based on their intake form data.
+ * This flow helps sales hosts quickly identify the readiness of a potential buyer.
  *
  * - triageVisitor - A function that triages a visitor.
  * - TriageVisitorInput - The input type for the triageVisitor function.
@@ -24,7 +25,7 @@ const TriageVisitorOutputSchema = z.object({
     .describe('The triage status of the visitor based on their inputs.'),
   reasoning: z
     .string()
-    .describe('A brief explanation for why the visitor was assigned this status.'),
+    .describe('A brief, actionable explanation for why the visitor was assigned this status. This should be a sentence the sales host can use.'),
 });
 export type TriageVisitorOutput = z.infer<typeof TriageVisitorOutputSchema>;
 
@@ -36,18 +37,23 @@ const prompt = ai.definePrompt({
   name: 'triageVisitorPrompt',
   input: {schema: TriageVisitorInputSchema},
   output: {schema: TriageVisitorOutputSchema},
-  prompt: `You are an expert at qualifying leads for new home sales. Based on the following information from a visitor, classify them as "Hot Now", "Researching", or "Just Looking".
+  prompt: `You are an expert at qualifying leads for new home sales. Based on the following information from a visitor intake form, classify them and provide a concise reason for your classification.
 
-  Budget: {{{budget}}}
-  Timeline: {{{timeline}}}
-  Must-Have Feature: {{{mustHave}}}
+  Visitor Information:
+  - Budget: {{{budget}}}
+  - Desired Move-in Timeline: {{{timeline}}}
+  - Must-Have Feature: {{{mustHave}}}
 
-  Criteria:
-  - "Hot Now": Short timeline (e.g., < 3 months), specific budget, clear must-haves. These are urgent buyers.
+  Classification Criteria:
+  - "Hot Now": Short timeline (e.g., < 3 months), specific budget, clear must-haves. These are urgent, high-intent buyers.
   - "Researching": Mid-range timeline (3-6 months), may have a budget, exploring options. They are serious but not in a rush.
-  - "Just Looking": Long timeline (>6 months or undecided), vague or no budget, general interest. They are early in the process.
+  - "Just Looking": Long timeline (>6 months or undecided), vague or no budget, general interest. They are early in the process and likely just exploring.
 
-  Provide the classification and a brief reasoning.`,
+  Your task is to return a JSON object with the visitor's 'status' and a 'reasoning' for that status. The reasoning should be a single, actionable sentence.
+  Example reasoning for a 'Hot Now' lead: "They have a clear budget and need to move in under 3 months."
+  Example reasoning for a 'Researching' lead: "They are planning for the next 3-6 months and are starting to define what they want."
+  Example reasoning for a 'Just Looking' lead: "With a timeline of over a year, they are in the very early stages of exploring the market."
+  `,
 });
 
 const triageVisitorFlow = ai.defineFlow(
