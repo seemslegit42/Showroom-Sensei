@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -5,6 +6,22 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useState, useEffect } from 'react';
+import { VisitorDetails } from './visitor-details';
+import { AiUpsell } from './ai-upsell';
+import type { VisitWithVisitor } from '@/lib/types';
+
+
+export function OptionConfiguratorWrapper({ visit }: { visit: VisitWithVisitor }) {
+  const [currentSelections, setCurrentSelections] = useState('Standard Finishes');
+
+  return (
+    <>
+      <VisitorDetails visit={visit} />
+      <AiUpsell visit={visit} currentSelections={currentSelections} />
+      <OptionConfigurator onSelectionChange={setCurrentSelections} />
+    </>
+  )
+}
 
 type OptionConfiguratorProps = {
   onSelectionChange: (selection: string) => void;
