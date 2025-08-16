@@ -9,7 +9,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { VisitWithVisitor } from '@/lib/types';
 import { getVisitDetails } from '@/lib/actions';
 
-export default async function VisitorTourPage({ params }: { params: { id: string } }) {
+type VisitorTourPageProps = {
+  params: { id: string };
+};
+
+export default async function VisitorTourPage({ params }: VisitorTourPageProps) {
   const visitId = params.id;
   
   const visit: VisitWithVisitor | null = await getVisitDetails(visitId);
