@@ -8,7 +8,6 @@ import { AutomatedFollowup } from '@/components/tour/automated-followup';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { VisitWithVisitor } from '@/lib/types';
 import { getVisitDetails } from '@/lib/actions';
-import { notFound } from 'next/navigation';
 
 type VisitorTourPageProps = {
   params: { id: string };

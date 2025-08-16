@@ -10,7 +10,7 @@ export type VisitWithVisitor = {
     budgetMax: number | null;
     timeline: string;
     mustHave: string;
-    notes: string | null;
+    notes?: string | null;
     startedAt: Date;
     endedAt: Date | null;
 };
