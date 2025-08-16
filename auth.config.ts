@@ -21,10 +21,9 @@ export const authConfig = {
     },
     async session({ session, token }) {
       if (token?.id) {
-        session.user.id = token.id as string;
+        session.user.id = token.id;
       }
        if (token?.role) {
-        // @ts-expect-error - role is not on the default type
         session.user.role = token.role;
       }
       return session;
@@ -32,7 +31,6 @@ export const authConfig = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        // @ts-expect-error - role is not on the default type
         token.role = user.role;
       }
       return token;

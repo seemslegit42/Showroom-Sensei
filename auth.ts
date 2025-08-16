@@ -4,6 +4,7 @@ import Resend from 'next-auth/providers/resend';
 import { db } from '@/lib/db';
 import { users, accounts, sessions, verificationTokens } from '@/lib/db/schema';
 import { authConfig } from './auth.config';
+import type { User } from 'next-auth';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db, {
