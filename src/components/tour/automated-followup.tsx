@@ -139,7 +139,7 @@ export function AutomatedFollowup({ visit }: { visit: VisitWithVisitor }) {
                 <Label htmlFor="photos" className="w-full">
                   <Button type="button" variant="outline" className="w-full" asChild>
                     <span className="cursor-pointer">
-                      <Paperclip />
+                      <Paperclip className="w-4 h-4 mr-2" />
                       Select Photos
                     </span>
                   </Button>
@@ -165,7 +165,7 @@ export function AutomatedFollowup({ visit }: { visit: VisitWithVisitor }) {
             )}
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
-            <Wand2 />
+            <Wand2 className="w-4 h-4 mr-2" />
             {isLoading ? 'Generating Recap...' : 'Generate AI Recap'}
           </Button>
         </form>
@@ -185,7 +185,7 @@ export function AutomatedFollowup({ visit }: { visit: VisitWithVisitor }) {
                 <div>
                     <Textarea value={recap.recap} readOnly rows={8} className="text-base bg-muted" />
                     <Button className="w-full mt-4" onClick={handleSend}>
-                        <Send />
+                        <Send className="w-4 h-4 mr-2" />
                         Send to {visit.visitor.name}
                     </Button>
                 </div>

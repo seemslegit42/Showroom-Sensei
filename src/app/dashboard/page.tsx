@@ -51,15 +51,15 @@ function DashboardPage() {
         <Tabs defaultValue="welcome" className="w-full">
           <TabsList className="grid w-full grid-cols-1 sm:w-auto sm:grid-cols-3">
             <TabsTrigger value="welcome">
-              <Users className="mr-2" />
+              <Users className="w-4 h-4 mr-2" />
               Welcome
             </TabsTrigger>
             <TabsTrigger value="inventory">
-              <Home className="mr-2" />
+              <Home className="w-4 h-4 mr-2" />
               Inventory
             </TabsTrigger>
             <TabsTrigger value="analytics">
-              <AreaChart className="mr-2" />
+              <AreaChart className="w-4 h-4 mr-2" />
               Analytics
             </TabsTrigger>
           </TabsList>

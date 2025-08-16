@@ -24,7 +24,7 @@ export default async function VisitorTourPage({ params }: VisitorTourPageProps) 
         <p className="mb-4 text-lg text-destructive">Visitor not found.</p>
         <Link href="/dashboard" className="mt-4">
           <Button variant="outline">
-            <ArrowLeft />
+            <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>
         </Link>
@@ -37,7 +37,7 @@ export default async function VisitorTourPage({ params }: VisitorTourPageProps) 
       <header className="sticky top-0 z-20 flex items-center h-16 px-4 border-b shrink-0 bg-background/90 backdrop-blur-sm sm:px-6">
         <Link href="/dashboard" className="mr-4">
           <Button variant="outline" size="icon">
-            <ArrowLeft />
+            <ArrowLeft className="w-4 h-4" />
             <span className="sr-only">Back</span>
           </Button>
         </Link>
@@ -51,7 +51,7 @@ export default async function VisitorTourPage({ params }: VisitorTourPageProps) 
           <div className="space-y-6 lg:col-span-2 lg:col-start-1">
             <Tabs defaultValue="insights" className="w-full">
               <TabsList>
-                <TabsTrigger value="insights"><Building />Neighborhood</TabsTrigger>
+                <TabsTrigger value="insights"><Building className="w-4 h-4 mr-2" />Neighborhood</TabsTrigger>
               </TabsList>
               <TabsContent value="insights" className="mt-4">
                 <NeighborhoodInsights />

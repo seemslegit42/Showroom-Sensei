@@ -11,6 +11,7 @@ import { Bot, LogIn } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/use-auth';
+import type { AuthError } from 'firebase/auth';
 
 export default function LoginPage() {
     const { logInWithEmail } = useAuth();
@@ -37,9 +38,10 @@ export default function LoginPage() {
             });
             router.push('/dashboard');
         } catch (authError: any) {
+            const typedError = authError as AuthError;
             let errorMessage = 'An unknown error occurred. Please try again.';
-            if (authError.code) {
-                switch (authError.code) {
+            if (typedError.code) {
+                switch (typedError.code) {
                     case 'auth/user-not-found':
                     case 'auth/wrong-password':
                     case 'auth/invalid-credential':
@@ -108,7 +110,7 @@ export default function LoginPage() {
                     </CardContent>
                     <CardFooter>
                         <Button type="submit" className="w-full" disabled={isLoading || !email || !password}>
-                            {isLoading ? 'Signing In...' : <><LogIn /> Sign In </> }
+                            {isLoading ? 'Signing In...' : <><LogIn className="w-4 h-4 mr-2" /> Sign In </> }
                         </Button>
                     </CardFooter>
                 </form>

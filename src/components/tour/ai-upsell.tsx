@@ -77,7 +77,7 @@ export function AiUpsell({ visit, currentSelections }: { visit: VisitWithVisitor
             />
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
-            <Wand2 />
+            <Wand2 className="w-4 h-4 mr-2" />
             {isLoading ? 'Thinking...' : 'Get Suggestions'}
           </Button>
         </form>

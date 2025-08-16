@@ -4,7 +4,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase/config';
-import { onAuthStateChanged, User, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { onAuthStateChanged, User, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, AuthError } from 'firebase/auth';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface AuthContextType {
@@ -33,9 +33,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logInWithEmail = async (email: string, password: string) => {
     try {
         return await signInWithEmailAndPassword(auth, email, password);
-    } catch (error: any) {
+    } catch (error) {
+        const typedError = error as AuthError;
         // If user not found, try to create a new user (for demo purposes)
-        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+        if (typedError.code === 'auth/user-not-found' || typedError.code === 'auth/invalid-credential') {
             try {
                 return await createUserWithEmailAndPassword(auth, email, password);
             } catch (createError) {
