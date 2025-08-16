@@ -1,4 +1,6 @@
 
+"use client";
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,6 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { PlusCircle, UserCheck, Flame, Search, Eye, Info } from 'lucide-react';
 import { getActiveVisits } from '@/lib/actions';
 import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
+import type { VisitWithVisitor } from '@/lib/types';
 
 
 const statusIcons: { [key: string]: React.ReactNode } = {
@@ -20,8 +24,16 @@ const statusColors: { [key: string]: 'destructive' | 'secondary' | 'outline' } =
   'Just Looking': 'outline',
 };
 
-export async function WelcomeTab() {
-  const visits = await getActiveVisits();
+export function WelcomeTab() {
+  const [visits, setVisits] = useState<VisitWithVisitor[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    getActiveVisits()
+      .then(data => setVisits(data))
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+  }, []);
 
   return (
     <Card>
@@ -36,7 +48,9 @@ export async function WelcomeTab() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {visits.length === 0 ? (
+          {isLoading ? (
+            <p>Loading visitors...</p>
+          ) : visits.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-8 text-center border-2 border-dashed rounded-lg bg-muted/50">
                 <Info className="w-12 h-12 mb-4 text-muted-foreground" />
                 <h3 className="mb-2 text-xl font-semibold">No Active Visitors</h3>

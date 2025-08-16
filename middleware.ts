@@ -1,9 +1,6 @@
-import NextAuth from 'next-auth';
-import { authConfig } from './auth.config';
- 
-export default NextAuth(authConfig).auth;
- 
+// This file is intentionally left blank.
+// The new authentication model with Firebase handles route protection differently.
+// We will implement this protection in a subsequent step.
 export const config = {
-  // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-  matcher: ['/dashboard/:path*', '/login'],
+  matcher: [],
 };

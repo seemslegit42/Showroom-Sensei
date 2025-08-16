@@ -1,4 +1,6 @@
 
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
@@ -6,6 +8,9 @@ import type { ChartConfig } from "@/components/ui/chart"
 import { getAnalyticsData } from "@/lib/actions";
 import { summarizeDay } from "@/ai/flows/summarize-day";
 import { Bot } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import type { VisitWithVisitor, VisitStage } from "@/lib/types";
+import type { SummarizeDayOutput } from "@/ai/flows/summarize-day";
 
 const leadScoreChartConfig = {
   value: {
@@ -33,17 +38,37 @@ const objectionChartConfig = {
 } satisfies ChartConfig
 
 
-export async function AnalyticsTab() {
-  const { allVisits, leadScoreData, objectionData } = await getAnalyticsData();
+export function AnalyticsTab() {
+  const [analyticsData, setAnalyticsData] = useState<{
+    allVisits: VisitWithVisitor[];
+    leadScoreData: { name: VisitStage; value: number }[];
+    objectionData: { name: string; value: number }[];
+  } | null>(null);
+  const [dailySummary, setDailySummary] = useState<SummarizeDayOutput | null>(null);
 
-  const dailySummary = await summarizeDay({ 
-      visitors: allVisits.map(v => ({
-          name: v.visitor.name || 'Unknown',
-          status: v.stage || 'Just Looking',
-          budget: v.budgetMin && v.budgetMax ? `$${v.budgetMin/1000}k - $${v.budgetMax/1000}k` : (v.budgetMin ? `$${v.budgetMin/1000}k+` : 'Not specified'),
-          mustHave: v.mustHave || 'Not specified'
-      }))
-  });
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getAnalyticsData();
+      setAnalyticsData(data);
+
+      const summary = await summarizeDay({ 
+        visitors: data.allVisits.map(v => ({
+            name: v.visitor.name || 'Unknown',
+            status: v.stage || 'Just Looking',
+            budget: v.budgetMin && v.budgetMax ? `$${v.budgetMin/1000}k - $${v.budgetMax/1000}k` : (v.budgetMin ? `$${v.budgetMin/1000}k+` : 'Not specified'),
+            mustHave: v.mustHave || 'Not specified'
+        }))
+      });
+      setDailySummary(summary);
+    }
+    fetchData();
+  }, []);
+
+  if (!analyticsData || !dailySummary) {
+    return <div>Loading analytics...</div>; // Or a skeleton loader
+  }
+
+  const { allVisits, leadScoreData, objectionData } = analyticsData;
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">

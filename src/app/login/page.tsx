@@ -2,77 +2,68 @@
 'use client';
 
 import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Bot, LogIn, Mail } from 'lucide-react';
-import { signInWithEmail } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function LoginPage() {
+    const { logInWithEmail } = useAuth();
+    const router = useRouter();
     const { toast } = useToast();
     const searchParams = useSearchParams();
-    const error = searchParams.get('error');
+    const initialError = searchParams.get('error');
 
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [emailSent, setEmailSent] = useState(false);
+    const [error, setError] = useState(initialError);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
+        setError(null);
 
-        const result = await signInWithEmail(email);
-
-        if (result.success) {
-            setEmailSent(true);
+        try {
+            await logInWithEmail(email, password);
             toast({
-                title: 'Check your email',
-                description: result.message,
+                title: 'Sign-in Successful',
+                description: "You're now logged in.",
             });
-        } else {
+            router.push('/dashboard');
+        } catch (authError: any) {
+            let errorMessage = 'An unknown error occurred. Please try again.';
+            if (authError.code) {
+                switch (authError.code) {
+                    case 'auth/user-not-found':
+                    case 'auth/wrong-password':
+                    case 'auth/invalid-credential':
+                        errorMessage = 'Invalid email or password. Please try again.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Please enter a valid email address.';
+                        break;
+                    default:
+                        errorMessage = 'An unexpected error occurred during sign-in.';
+                        break;
+                }
+            }
              toast({
                 title: 'Sign-in Failed',
-                description: result.message,
+                description: errorMessage,
                 variant: 'destructive',
             });
+            setError(errorMessage);
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
     
-    const getErrorMessage = (error: string | null) => {
-        switch (error) {
-            case 'Configuration':
-            case 'AccessDenied':
-            case 'Verification':
-                return 'There was a problem with the server configuration. Please contact support.';
-            case 'Default':
-            default:
-                return 'An unknown error occurred. Please try again.';
-        }
-    }
-
-    if (emailSent) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-background">
-                <Card className="w-full max-w-sm">
-                     <CardHeader className="text-center">
-                        <div className="flex items-center justify-center gap-2 mb-2">
-                            <Mail className="w-10 h-10 text-primary" />
-                        </div>
-                        <CardTitle>Check Your Inbox</CardTitle>
-                        <CardDescription>
-                            We've sent a magic sign-in link to <strong>{email}</strong>. Please click the link in that email to continue.
-                        </CardDescription>
-                    </CardHeader>
-                </Card>
-            </div>
-        )
-    }
-
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-background">
             <Card className="w-full max-w-sm">
@@ -83,17 +74,17 @@ export default function LoginPage() {
                             <h1 className="text-2xl font-bold font-headline">Showhome Sensei</h1>
                         </div>
                         <CardTitle>Host Sign-In</CardTitle>
-                        <CardDescription>Enter your email to receive a magic sign-in link.</CardDescription>
+                        <CardDescription>Enter your credentials to access the dashboard.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         {error && (
                             <Alert variant="destructive">
                                 <AlertTitle>Authentication Error</AlertTitle>
-                                <AlertDescription>{getErrorMessage(error)}</AlertDescription>
+                                <AlertDescription>{error}</AlertDescription>
                             </Alert>
                         )}
-                        <div>
-                            <Label htmlFor="email" className="sr-only">Email</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email</Label>
                             <Input 
                                 id="email" 
                                 type="email" 
@@ -103,10 +94,21 @@ export default function LoginPage() {
                                 required 
                             />
                         </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="password">Password</Label>
+                            <Input 
+                                id="password" 
+                                type="password" 
+                                placeholder="••••••••"
+                                value={password} 
+                                onChange={(e) => setPassword(e.target.value)} 
+                                required 
+                            />
+                        </div>
                     </CardContent>
                     <CardFooter>
-                        <Button type="submit" className="w-full" disabled={isLoading || !email}>
-                            {isLoading ? 'Sending...' : <><LogIn /> Send Magic Link </> }
+                        <Button type="submit" className="w-full" disabled={isLoading || !email || !password}>
+                            {isLoading ? 'Signing In...' : <><LogIn /> Sign In </> }
                         </Button>
                     </CardFooter>
                 </form>

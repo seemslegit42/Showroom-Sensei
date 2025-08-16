@@ -8,7 +8,7 @@ import { AnalyticsTab } from '@/components/analytics-tab';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bot, Home, AreaChart, Users, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { signOut, useSession } from "next-auth/react"
+import { useAuth } from '@/hooks/use-auth';
 import {
   Tooltip,
   TooltipContent,
@@ -17,8 +17,8 @@ import {
 } from "@/components/ui/tooltip"
 
 export default function DashboardPage() {
-  const { data: session } = useSession();
-  const userName = session?.user?.name || "Sales Host";
+  const { user, logOut } = useAuth();
+  const userName = user?.displayName || user?.email || "Sales Host";
   const userInitials = userName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
   return (
@@ -32,7 +32,7 @@ export default function DashboardPage() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" onClick={() => signOut({ callbackUrl: '/' })}>
+                  <Button variant="ghost" size="icon" onClick={logOut}>
                       <LogOut />
                   </Button>
                 </TooltipTrigger>
@@ -42,7 +42,7 @@ export default function DashboardPage() {
               </Tooltip>
             </TooltipProvider>
             <Avatar>
-              <AvatarImage src={session?.user?.image ?? undefined} data-ai-hint="woman portrait" alt={userName} />
+              <AvatarImage src={user?.photoURL ?? undefined} data-ai-hint="woman portrait" alt={userName} />
               <AvatarFallback>{userInitials}</AvatarFallback>
             </Avatar>
         </div>

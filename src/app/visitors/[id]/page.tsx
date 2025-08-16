@@ -1,9 +1,7 @@
 
 import Link from 'next/link';
-import { ArrowLeft, Building, Paintbrush } from 'lucide-react';
+import { ArrowLeft, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { VisitorDetails } from '@/components/tour/visitor-details';
-import { AiUpsell } from '@/components/tour/ai-upsell';
 import { OptionConfiguratorWrapper } from '@/components/tour/option-configurator';
 import { NeighborhoodInsights } from '@/components/tour/neighborhood-insights';
 import { AutomatedFollowup } from '@/components/tour/automated-followup';
@@ -14,12 +12,8 @@ import { notFound } from 'next/navigation';
 
 
 export default async function VisitorTourPage({ params }: { params: { id: string } }) {
-  const visitId = parseInt(params.id, 10);
+  const visitId = params.id;
   
-  if (isNaN(visitId)) {
-    notFound();
-  }
-
   const visit: VisitWithVisitor | null = await getVisitDetails(visitId);
 
   if (!visit) {
