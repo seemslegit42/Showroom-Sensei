@@ -10,8 +10,11 @@ import type { VisitWithVisitor } from '@/lib/types';
 import { getVisitDetails } from '@/lib/actions';
 import { notFound } from 'next/navigation';
 
+type VisitorTourPageProps = {
+  params: { id: string };
+};
 
-export default async function VisitorTourPage({ params }: { params: { id: string } }) {
+export default async function VisitorTourPage({ params }: VisitorTourPageProps) {
   const visitId = params.id;
   
   const visit: VisitWithVisitor | null = await getVisitDetails(visitId);
