@@ -1,6 +1,5 @@
-// This file is intentionally left blank.
-// The new authentication model with Firebase handles route protection differently.
-// We will implement this protection in a subsequent step.
+
+// No-op middleware. Route protection is now handled by the useAuth hook and ProtectedRoute component.
 export const config = {
   matcher: [],
 };

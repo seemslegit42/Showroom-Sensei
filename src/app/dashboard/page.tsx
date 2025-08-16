@@ -8,7 +8,7 @@ import { AnalyticsTab } from '@/components/analytics-tab';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bot, Home, AreaChart, Users, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth, ProtectedRoute } from '@/hooks/use-auth';
 import {
   Tooltip,
   TooltipContent,
@@ -16,7 +16,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-export default function DashboardPage() {
+function DashboardPage() {
   const { user, logOut } = useAuth();
   const userName = user?.displayName || user?.email || "Sales Host";
   const userInitials = userName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
@@ -76,4 +76,13 @@ export default function DashboardPage() {
       </main>
     </div>
   );
+}
+
+
+export default function DashboardPageWithAuth() {
+  return (
+    <ProtectedRoute>
+      <DashboardPage />
+    </ProtectedRoute>
+  )
 }
