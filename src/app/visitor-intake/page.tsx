@@ -160,7 +160,7 @@ export default function VisitorIntakePage() {
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select a timeline" />
-                                                </SelectTrigger>
+                                                </Trigger>
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectItem value="<3">Within 3 months</SelectItem>

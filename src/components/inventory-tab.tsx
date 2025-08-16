@@ -83,7 +83,7 @@ export function InventoryTab() {
                 />
               </CardHeader>
               <CardContent className="p-4">
-                <CardTitle className="font-headline">{home.name}</CardTitle>
+                <CardTitle>{home.name}</CardTitle>
                 <div className="mt-2 text-lg font-semibold text-primary">
                   ${parseFloat(home.basePrice).toLocaleString()}
                 </div>
